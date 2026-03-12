@@ -1,0 +1,104 @@
+<h2>Design — Section 1: Architecture</h2>
+<p class="subtitle">Electron main/renderer split with IPC bridge — does this look right?</p>
+
+<div style="margin: 1.5rem 0;">
+  <svg width="100%" viewBox="0 0 740 380" style="max-width:740px;display:block;margin:0 auto" font-family="monospace">
+
+    <!-- Background zones -->
+    <!-- Renderer process -->
+    <rect x="10" y="10" width="340" height="360" rx="10" fill="rgba(33,150,243,0.06)" stroke="#1976D2" stroke-width="1.5" stroke-dasharray="6,3"/>
+    <text x="26" y="30" fill="#1976D2" font-size="11" font-weight="bold">RENDERER PROCESS (React UI)</text>
+
+    <!-- Main process -->
+    <rect x="390" y="10" width="340" height="360" rx="10" fill="rgba(76,175,80,0.06)" stroke="#4CAF50" stroke-width="1.5" stroke-dasharray="6,3"/>
+    <text x="406" y="30" fill="#4CAF50" font-size="11" font-weight="bold">MAIN PROCESS (Node.js)</text>
+
+    <!-- IPC Bridge -->
+    <rect x="348" y="140" width="44" height="100" rx="6" fill="#1a1a2e" stroke="#FF9900" stroke-width="1.5"/>
+    <text x="370" y="186" text-anchor="middle" fill="#FF9900" font-size="9" font-weight="bold">IPC</text>
+    <text x="370" y="200" text-anchor="middle" fill="#FF9900" font-size="9">Bridge</text>
+
+    <!-- Renderer components -->
+    <!-- Canvas -->
+    <rect x="28" y="50" width="300" height="90" rx="6" fill="#0d1117" stroke="#64b5f6" stroke-width="1.5"/>
+    <text x="178" y="72" text-anchor="middle" fill="#64b5f6" font-size="10" font-weight="bold">Hybrid Canvas (React Flow)</text>
+    <text x="178" y="90" text-anchor="middle" fill="#888" font-size="9">Topology Map view</text>
+    <text x="178" y="105" text-anchor="middle" fill="#888" font-size="9">Node Graph view (toggle)</text>
+    <text x="178" y="120" text-anchor="middle" fill="#888" font-size="9">Live status overlays</text>
+
+    <!-- Sidebar -->
+    <rect x="28" y="158" width="140" height="70" rx="6" fill="#0d1117" stroke="#64b5f6" stroke-width="1.5"/>
+    <text x="98" y="178" text-anchor="middle" fill="#64b5f6" font-size="10" font-weight="bold">Resource Palette</text>
+    <text x="98" y="196" text-anchor="middle" fill="#888" font-size="9">AWS service catalog</text>
+    <text x="98" y="211" text-anchor="middle" fill="#888" font-size="9">Drag to canvas</text>
+
+    <!-- Inspector -->
+    <rect x="188" y="158" width="140" height="70" rx="6" fill="#0d1117" stroke="#64b5f6" stroke-width="1.5"/>
+    <text x="258" y="178" text-anchor="middle" fill="#64b5f6" font-size="10" font-weight="bold">Inspector Panel</text>
+    <text x="258" y="196" text-anchor="middle" fill="#888" font-size="9">Resource config/details</text>
+    <text x="258" y="211" text-anchor="middle" fill="#888" font-size="9">CLI command preview</text>
+
+    <!-- Command drawer -->
+    <rect x="28" y="246" width="300" height="60" rx="6" fill="#0d1117" stroke="#FF9900" stroke-width="1.5"/>
+    <text x="178" y="268" text-anchor="middle" fill="#FF9900" font-size="10" font-weight="bold">Command Drawer</text>
+    <text x="178" y="285" text-anchor="middle" fill="#888" font-size="9">Shows generated CLI command · Run / Cancel · Output log</text>
+
+    <!-- State -->
+    <rect x="28" y="320" width="300" height="38" rx="6" fill="#0d1117" stroke="#9c27b0" stroke-width="1.5"/>
+    <text x="178" y="342" text-anchor="middle" fill="#9c27b0" font-size="10" font-weight="bold">Zustand Store  (app state + resource graph)</text>
+
+    <!-- Main process components -->
+    <!-- AWS Service Layer -->
+    <rect x="408" y="50" width="300" height="100" rx="6" fill="#0d1117" stroke="#4CAF50" stroke-width="1.5"/>
+    <text x="558" y="72" text-anchor="middle" fill="#4CAF50" font-size="10" font-weight="bold">AWS Service Layer</text>
+    <rect x="420" y="82" width="130" height="28" rx="4" fill="#1a2332" stroke="#4CAF50" stroke-width="1"/>
+    <text x="485" y="100" text-anchor="middle" fill="#4CAF50" font-size="9">AWS SDK v3 (reads)</text>
+    <rect x="564" y="82" width="130" height="28" rx="4" fill="#1a2332" stroke="#FF9900" stroke-width="1"/>
+    <text x="629" y="100" text-anchor="middle" fill="#FF9900" font-size="9">CLI subprocess (writes)</text>
+    <text x="558" y="138" text-anchor="middle" fill="#888" font-size="9">Credential manager · Profile switcher · Region selector</text>
+
+    <!-- Resource Scanner -->
+    <rect x="408" y="168" width="140" height="60" rx="6" fill="#0d1117" stroke="#4CAF50" stroke-width="1.5"/>
+    <text x="478" y="190" text-anchor="middle" fill="#4CAF50" font-size="10" font-weight="bold">Resource Scanner</text>
+    <text x="478" y="208" text-anchor="middle" fill="#888" font-size="9">Polls + diffs resource state</text>
+    <text x="478" y="220" text-anchor="middle" fill="#888" font-size="9">Sends updates via IPC</text>
+
+    <!-- CLI Engine -->
+    <rect x="564" y="168" width="144" height="60" rx="6" fill="#0d1117" stroke="#FF9900" stroke-width="1.5"/>
+    <text x="636" y="190" text-anchor="middle" fill="#FF9900" font-size="10" font-weight="bold">CLI Engine</text>
+    <text x="636" y="208" text-anchor="middle" fill="#888" font-size="9">Builds · previews · executes</text>
+    <text x="636" y="220" text-anchor="middle" fill="#888" font-size="9">aws CLI commands</text>
+
+    <!-- File System -->
+    <rect x="408" y="246" width="300" height="40" rx="6" fill="#0d1117" stroke="#888" stroke-width="1"/>
+    <text x="558" y="271" text-anchor="middle" fill="#888" font-size="10">~/.aws/credentials · ~/.aws/config · profiles</text>
+
+    <!-- AWS Cloud -->
+    <rect x="408" y="304" width="300" height="50" rx="6" fill="rgba(255,153,0,0.08)" stroke="#FF9900" stroke-width="1.5"/>
+    <text x="558" y="325" text-anchor="middle" fill="#FF9900" font-size="11" font-weight="bold">AWS Cloud</text>
+    <text x="558" y="344" text-anchor="middle" fill="#888" font-size="9">EC2 · VPC · RDS · S3 · Lambda · IAM ···</text>
+
+    <!-- IPC Arrows -->
+    <line x1="328" y1="175" x2="348" y2="175" stroke="#FF9900" stroke-width="1.5" marker-end="url(#a)"/>
+    <line x1="392" y1="200" x2="408" y2="200" stroke="#FF9900" stroke-width="1.5" marker-end="url(#a)"/>
+    <line x1="348" y1="215" x2="328" y2="215" stroke="#64b5f6" stroke-width="1.5" marker-end="url(#b)"/>
+    <line x1="408" y1="190" x2="392" y2="190" stroke="#64b5f6" stroke-width="1.5" marker-end="url(#b)"/>
+
+    <!-- Internal arrows main -->
+    <line x1="558" y1="150" x2="478" y2="168" stroke="#4CAF50" stroke-width="1" opacity="0.5" marker-end="url(#c)"/>
+    <line x1="558" y1="150" x2="636" y2="168" stroke="#FF9900" stroke-width="1" opacity="0.5" marker-end="url(#d)"/>
+    <line x1="478" y1="228" x2="478" y2="246" stroke="#4CAF50" stroke-width="1" opacity="0.5"/>
+    <line x1="636" y1="228" x2="636" y2="246" stroke="#FF9900" stroke-width="1" opacity="0.5"/>
+    <line x1="558" y1="286" x2="558" y2="304" stroke="#FF9900" stroke-width="1.5" opacity="0.7" marker-end="url(#d)"/>
+
+    <!-- Arrow markers -->
+    <defs>
+      <marker id="a" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#FF9900"/></marker>
+      <marker id="b" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#64b5f6"/></marker>
+      <marker id="c" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#4CAF50"/></marker>
+      <marker id="d" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#FF9900"/></marker>
+    </defs>
+  </svg>
+</div>
+
+<p style="text-align:center;color:#666;font-size:0.8rem;margin-top:0.5rem">Does this architecture look right? Reply in terminal.</p>

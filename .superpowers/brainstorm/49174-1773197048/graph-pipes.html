@@ -1,0 +1,207 @@
+<h2>Graph View — Orthogonal "pipe" routing</h2>
+<p class="subtitle">All connections route at 90° angles — like network diagrams and circuit boards</p>
+
+<div style="margin: 1.5rem auto; max-width: 800px;">
+  <div class="mockup">
+    <div class="mockup-header">Cloudblocks — Graph View (pipe routing)</div>
+    <div class="mockup-body" style="padding: 0; background: #0a0e1a; overflow: hidden; border-radius: 0 0 6px 6px;">
+
+      <div style="background:#0d1320;border-bottom:1px solid #1e2d40;display:flex;align-items:center;padding:0 12px;height:36px;gap:16px">
+        <div style="display:flex;gap:6px">
+          <div style="width:10px;height:10px;border-radius:50%;background:#ff5f57"></div>
+          <div style="width:10px;height:10px;border-radius:50%;background:#febc2e"></div>
+          <div style="width:10px;height:10px;border-radius:50%;background:#28c840"></div>
+        </div>
+        <div style="font-size:11px;font-weight:700;color:#FF9900;letter-spacing:1px;font-family:monospace">CLOUDBLOCKS</div>
+        <div style="flex:1"></div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:10px;font-family:monospace">
+          <div style="background:#1a2332;border:1px solid #FF9900;border-radius:4px;padding:2px 8px;color:#FF9900">default ▾</div>
+          <div style="background:#1a2332;border:1px solid #333;border-radius:4px;padding:2px 8px;color:#aaa">us-east-1 ▾</div>
+          <div style="width:8px;height:8px;border-radius:50%;background:#28c840;box-shadow:0 0 6px #28c840"></div>
+          <span style="color:#28c840;font-size:9px">connected</span>
+        </div>
+      </div>
+
+      <div style="display:flex;height:480px">
+
+        <!-- Left sidebar -->
+        <div style="width:140px;background:#0d1117;border-right:1px solid #1e2d40;padding:8px 0;flex-shrink:0">
+          <div style="padding:4px 10px;font-size:9px;color:#555;font-family:monospace;letter-spacing:1px;text-transform:uppercase">Services</div>
+          <div style="padding:4px 10px;margin:2px 6px;border-radius:4px;background:#111;border:1px solid #222"><div style="font-size:9px;color:#aaa;font-family:monospace">⬡ VPC</div></div>
+          <div style="padding:4px 10px;margin:2px 6px;border-radius:4px;background:#111;border:1px solid #222"><div style="font-size:9px;color:#aaa;font-family:monospace">⬡ EC2</div></div>
+          <div style="padding:4px 10px;margin:2px 6px;border-radius:4px;background:#111;border:1px solid #222"><div style="font-size:9px;color:#aaa;font-family:monospace">⬡ RDS</div></div>
+          <div style="padding:4px 10px;margin:2px 6px;border-radius:4px;background:#111;border:1px solid #222"><div style="font-size:9px;color:#aaa;font-family:monospace">⬡ S3</div></div>
+          <div style="padding:4px 10px;margin:2px 6px;border-radius:4px;background:#111;border:1px solid #222"><div style="font-size:9px;color:#aaa;font-family:monospace">⬡ Lambda</div></div>
+          <div style="padding:4px 10px;margin:2px 6px;border-radius:4px;background:#111;border:1px solid #222"><div style="font-size:9px;color:#aaa;font-family:monospace">⬡ ALB</div></div>
+          <div style="padding:4px 10px;margin:2px 6px;border-radius:4px;background:#111;border:1px solid #222"><div style="font-size:9px;color:#aaa;font-family:monospace">⬡ IAM Role</div></div>
+          <div style="padding:4px 10px;margin:2px 6px;border-radius:4px;background:#111;border:1px solid #222"><div style="font-size:9px;color:#aaa;font-family:monospace">⬡ SG</div></div>
+          <div style="padding:4px 10px;margin-top:10px;font-size:9px;color:#555;font-family:monospace;letter-spacing:1px;text-transform:uppercase">Views</div>
+          <div style="padding:4px 10px;margin:2px 6px;border-radius:4px;background:#111;border:1px solid #222"><div style="font-size:9px;color:#aaa;font-family:monospace">⊞ Topology</div></div>
+          <div style="padding:4px 10px;margin:2px 6px;border-radius:4px;background:#1a2332;border:1px solid #64b5f6"><div style="font-size:9px;color:#64b5f6;font-family:monospace">◈ Graph ✓</div></div>
+        </div>
+
+        <!-- Canvas -->
+        <div style="flex:1;background:#080c14;position:relative;overflow:hidden">
+
+          <div style="position:absolute;top:8px;left:50%;transform:translateX(-50%);background:#0d1320;border:1px solid #1e2d40;border-radius:6px;padding:4px 8px;display:flex;gap:6px;align-items:center;z-index:10">
+            <button style="background:#1a2332;border:1px solid #FF9900;color:#FF9900;border-radius:4px;padding:2px 8px;font-size:9px;font-family:monospace">⟳ Scan</button>
+            <div style="width:1px;height:14px;background:#333"></div>
+            <button style="background:#111;border:1px solid #222;color:#aaa;border-radius:4px;padding:2px 8px;font-size:9px;font-family:monospace">⊞ Fit</button>
+            <button style="background:#111;border:1px solid #222;color:#aaa;border-radius:4px;padding:2px 8px;font-size:9px;font-family:monospace">Auto-layout</button>
+            <div style="width:1px;height:14px;background:#333"></div>
+            <button style="background:#111;border:1px solid #555;color:#aaa;border-radius:4px;padding:2px 8px;font-size:9px;font-family:monospace">Filter ▾</button>
+          </div>
+
+          <svg width="100%" height="100%" viewBox="0 0 520 420" style="position:absolute;top:0;left:0">
+            <defs>
+              <!-- Arrowheads -->
+              <marker id="p1" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#FF9900"/></marker>
+              <marker id="p2" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#4CAF50"/></marker>
+              <marker id="p3" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#64b5f6"/></marker>
+              <marker id="p4" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#1976D2"/></marker>
+              <marker id="p5" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#9c27b0"/></marker>
+              <filter id="ng"><feGaussianBlur stdDeviation="2.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+            </defs>
+
+            <!--
+              NODE CENTERS (for reference when drawing pipes):
+              IGW:        x=80,  y=75   (w=80, h=28)
+              VPC:        x=240, y=75   (circle r=22)
+              ALB:        x=80,  y=185  (w=90, h=28)
+              EC2-a:      x=80,  y=295  (w=78, h=28)
+              EC2-b:      x=200, y=295  (w=78, h=28)
+              RDS:        x=350, y=295  (w=84, h=28)
+              Lambda:     x=400, y=185  (w=80, h=28)
+              S3:         x=400, y=75   (w=78, h=28)
+              IAM:        x=240, y=185  (w=72, h=28)
+              SG outline: around EC2-a and EC2-b
+            -->
+
+            <!-- ═══ PIPES ═══ -->
+
+            <!-- IGW → VPC: right from IGW(120,75) → across → into VPC left(218,75) -->
+            <polyline points="120,75 218,75" fill="none" stroke="#4CAF50" stroke-width="2" marker-end="url(#p2)" stroke-linecap="square"/>
+
+            <!-- VPC → ALB: down from VPC bottom(240,97) → left bend → into ALB right(125,185) -->
+            <polyline points="240,97 240,185 125,185" fill="none" stroke="#1976D2" stroke-width="1.5" marker-end="url(#p4)" stroke-linecap="square" stroke-dasharray="5,3"/>
+
+            <!-- VPC → Lambda: right from VPC right(262,75) → across → down into Lambda top(400,160) -->
+            <polyline points="262,75 400,75 400,160" fill="none" stroke="#1976D2" stroke-width="1.5" marker-end="url(#p4)" stroke-linecap="square" stroke-dasharray="5,3"/>
+
+            <!-- VPC → IAM: down from VPC bottom(240,97) → into IAM top(240,185) -->
+            <polyline points="240,97 240,140 276,140 276,185" fill="none" stroke="#9c27b0" stroke-width="1.2" marker-end="url(#p5)" stroke-linecap="square" stroke-dasharray="4,3" opacity="0.7"/>
+
+            <!-- ALB → EC2-a: down from ALB bottom(80,199) → into EC2-a top(80,281) -->
+            <polyline points="80,199 80,281" fill="none" stroke="#FF9900" stroke-width="2" marker-end="url(#p1)" stroke-linecap="square"/>
+
+            <!-- ALB → EC2-b: right then down from ALB right(125,185) → right → down into EC2-b top(200,281) -->
+            <polyline points="125,185 200,185 200,281" fill="none" stroke="#FF9900" stroke-width="2" marker-end="url(#p1)" stroke-linecap="square"/>
+
+            <!-- EC2-a → RDS: right from EC2-a right(119,295) → across → left into RDS left(308,295) -->
+            <polyline points="119,295 308,295" fill="none" stroke="#4CAF50" stroke-width="1.5" marker-end="url(#p2)" stroke-linecap="square"/>
+
+            <!-- EC2-b → RDS: right from EC2-b right(239,295) → across → into RDS left(308,295) -->
+            <polyline points="239,295 308,295" fill="none" stroke="#4CAF50" stroke-width="1.5" marker-end="url(#p2)" stroke-linecap="square"/>
+
+            <!-- Lambda → RDS: down from Lambda bottom(400,199) → down → left into RDS right(392,295) -->
+            <polyline points="400,199 400,295 392,295" fill="none" stroke="#64b5f6" stroke-width="1.5" marker-end="url(#p3)" stroke-linecap="square"/>
+
+            <!-- Lambda → S3: up from Lambda top(400,160) → into S3 bottom(400,89) -->
+            <polyline points="400,160 400,89" fill="none" stroke="#64b5f6" stroke-width="1.5" marker-end="url(#p3)" stroke-linecap="square"/>
+
+            <!-- Port label on EC2→RDS pipe -->
+            <rect x="245" y="286" width="58" height="14" rx="2" fill="#0d1117" stroke="#333" stroke-width="1"/>
+            <text x="274" y="296" text-anchor="middle" fill="#888" font-size="7" font-family="monospace">port 3306</text>
+
+            <!-- SG dashed outline around EC2-a and EC2-b -->
+            <rect x="30" y="270" width="265" height="54" rx="5" fill="none" stroke="#9c27b0" stroke-width="1.2" stroke-dasharray="4,3" opacity="0.7"/>
+            <text x="35" y="267" fill="#9c27b0" font-size="7" font-family="monospace">sg-web  ·  0.0.0.0/0:80,443</text>
+
+            <!-- ═══ NODES ═══ -->
+
+            <!-- IGW -->
+            <rect x="40" y="61" width="80" height="28" rx="5" fill="#0d1a10" stroke="#4CAF50" stroke-width="1.5"/>
+            <text x="80" y="79" text-anchor="middle" fill="#4CAF50" font-size="9" font-family="monospace" font-weight="bold">IGW</text>
+            <circle cx="113" cy="67" r="4" fill="#28c840" filter="url(#ng)"/>
+
+            <!-- VPC hub -->
+            <circle cx="240" cy="75" r="22" fill="#0a1520" stroke="#1976D2" stroke-width="2"/>
+            <text x="240" y="72" text-anchor="middle" fill="#1976D2" font-size="9" font-family="monospace" font-weight="bold">VPC</text>
+            <text x="240" y="84" text-anchor="middle" fill="#555" font-size="7" font-family="monospace">10.0.0.0/16</text>
+
+            <!-- S3 -->
+            <rect x="361" y="61" width="78" height="28" rx="5" fill="#0d0d1a" stroke="#64b5f6" stroke-width="1.5"/>
+            <text x="400" y="79" text-anchor="middle" fill="#64b5f6" font-size="9" font-family="monospace">S3 Bucket</text>
+            <circle cx="431" cy="67" r="4" fill="#28c840"/>
+
+            <!-- ALB — selected, glowing -->
+            <rect x="35" y="171" width="90" height="28" rx="5" fill="#1a1200" stroke="#FF9900" stroke-width="2.5" filter="url(#ng)"/>
+            <text x="80" y="189" text-anchor="middle" fill="#FF9900" font-size="9" font-family="monospace" font-weight="bold">ALB</text>
+            <circle cx="117" cy="177" r="4" fill="#28c840" filter="url(#ng)"/>
+
+            <!-- IAM -->
+            <rect x="276" y="171" width="72" height="28" rx="5" fill="#0d0d1a" stroke="#9c27b0" stroke-width="1.5"/>
+            <text x="312" y="189" text-anchor="middle" fill="#9c27b0" font-size="9" font-family="monospace">IAM Role</text>
+
+            <!-- Lambda -->
+            <rect x="360" y="160" width="80" height="28" rx="5" fill="#0d0d1a" stroke="#64b5f6" stroke-width="1.5"/>
+            <text x="400" y="178" text-anchor="middle" fill="#64b5f6" font-size="9" font-family="monospace">λ Function</text>
+            <circle cx="432" cy="166" r="4" fill="#28c840"/>
+
+            <!-- EC2-a -->
+            <rect x="41" y="281" width="78" height="28" rx="5" fill="#0d1117" stroke="#FF9900" stroke-width="1.5"/>
+            <text x="80" y="299" text-anchor="middle" fill="#FF9900" font-size="8" font-family="monospace">i-0a1  EC2</text>
+            <circle cx="111" cy="287" r="4" fill="#28c840"/>
+
+            <!-- EC2-b -->
+            <rect x="161" y="281" width="78" height="28" rx="5" fill="#0d1117" stroke="#FF9900" stroke-width="1"/>
+            <text x="200" y="299" text-anchor="middle" fill="#FF9900" font-size="8" font-family="monospace">i-0a2  EC2</text>
+            <circle cx="231" cy="287" r="4" fill="#febc2e"/>
+
+            <!-- RDS -->
+            <rect x="308" y="281" width="84" height="28" rx="5" fill="#1a0d0d" stroke="#4CAF50" stroke-width="1.5"/>
+            <text x="350" y="299" text-anchor="middle" fill="#4CAF50" font-size="9" font-family="monospace">RDS MySQL</text>
+            <circle cx="384" cy="287" r="4" fill="#28c840"/>
+
+            <!-- hint -->
+            <text x="20" y="385" fill="#2a2a2a" font-size="8" font-family="monospace">pipes route at 90°  ·  drag nodes to re-route  ·  React Flow "step" edge type</text>
+          </svg>
+
+          <!-- Mini-map -->
+          <div style="position:absolute;bottom:8px;right:8px;width:90px;height:60px;background:#0d1320;border:1px solid #1e2d40;border-radius:4px;opacity:0.8;display:flex;align-items:center;justify-content:center">
+            <span style="color:#555;font-size:8px;font-family:monospace">minimap</span>
+          </div>
+        </div>
+
+        <!-- Inspector -->
+        <div style="width:180px;background:#0d1117;border-left:1px solid #1e2d40;padding:8px;flex-shrink:0;overflow-y:auto">
+          <div style="font-size:9px;color:#FF9900;font-family:monospace;font-weight:bold;margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid #1e2d40">ALB  ·  Selected</div>
+          <div style="margin-bottom:8px"><div style="font-size:8px;color:#555;font-family:monospace;margin-bottom:2px">NAME</div><div style="font-size:9px;color:#eee;font-family:monospace">prod-alb-01</div></div>
+          <div style="margin-bottom:8px"><div style="font-size:8px;color:#555;font-family:monospace;margin-bottom:2px">STATE</div><div style="display:flex;align-items:center;gap:4px"><div style="width:6px;height:6px;border-radius:50%;background:#28c840"></div><span style="font-size:9px;color:#28c840;font-family:monospace">active</span></div></div>
+          <div style="margin-bottom:8px"><div style="font-size:8px;color:#555;font-family:monospace;margin-bottom:2px">CONNECTIONS</div>
+            <div style="font-size:8px;color:#aaa;font-family:monospace">→ i-0a1 (EC2)<br/>→ i-0a2 (EC2)</div>
+          </div>
+          <div style="margin-top:12px;padding-top:8px;border-top:1px solid #1e2d40">
+            <div style="font-size:8px;color:#555;font-family:monospace;margin-bottom:4px">ACTIONS</div>
+            <button style="width:100%;background:#1a2332;border:1px solid #FF9900;color:#FF9900;border-radius:3px;padding:4px;font-size:8px;font-family:monospace;cursor:pointer;margin-bottom:4px">Describe ↗</button>
+            <button style="width:100%;background:#111;border:1px solid #333;color:#aaa;border-radius:3px;padding:4px;font-size:8px;font-family:monospace;cursor:pointer">Modify…</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Command drawer -->
+      <div style="background:#0d1117;border-top:1px solid #FF9900;padding:6px 12px">
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:9px;color:#FF9900;font-family:monospace">$</span>
+          <code style="font-size:9px;color:#eee;font-family:monospace;flex:1">aws elbv2 describe-load-balancers --names prod-alb-01</code>
+          <button style="background:#FF9900;border:none;color:#000;border-radius:3px;padding:2px 10px;font-size:9px;font-family:monospace;font-weight:bold">Run</button>
+          <button style="background:#111;border:1px solid #333;color:#aaa;border-radius:3px;padding:2px 8px;font-size:9px;font-family:monospace">Cancel</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<p style="text-align:center;color:#666;font-size:0.8rem;margin-top:1rem">Does this pipe routing feel right? Reply in terminal.</p>

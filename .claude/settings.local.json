@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(CLAUDE_PLUGIN_ROOT=\"/Users/julius/.claude/plugins/cache/claude-plugins-official/superpowers/5.0.0\" && $CLAUDE_PLUGIN_ROOT/lib/brainstorm-server/start-server.sh --project-dir /Users/julius/AI/proj1)",
+      "Bash(CLAUDE_PLUGIN_ROOT=\"/Users/julius/.claude/plugins/cache/claude-plugins-official/superpowers/5.0.0\")",
+      "Read(//Users/julius/AI/proj1/$CLAUDE_PLUGIN_ROOT/lib/**)",
+      "Read(//Users/julius/.claude/plugins/cache/claude-plugins-official/superpowers/5.0.0/lib/brainstorm-server/**)",
+      "Bash(npm install:*)",
+      "Bash(git -C /Users/julius/AI/proj1 rev-parse HEAD)",
+      "Bash(printf '\\\\n\\\\n\\\\n\\\\n' | npm create @quick-start/electron cloudblocks -- --template react-ts --no-updater --no-mirror 2>&1 || true)",
+      "Bash(cd /Users/julius/AI/proj1/cloudblocks && npx --cache /tmp/npm-cache-julius tailwindcss init -p 2>&1)",
+      "Bash(cd /Users/julius/AI/proj1/cloudblocks && ./node_modules/.bin/tailwindcss init -p 2>&1)",
+      "Bash(cd /Users/julius/AI/proj1/cloudblocks && node -e \"const p = require\\('./node_modules/tailwindcss/package.json'\\); console.log\\(p.version\\)\")",
+      "Bash(cd /Users/julius/AI/proj1/cloudblocks && npm run build 2>&1)",
+      "Bash(git commit:*)",
+      "Bash(node -e \"const pkg = require\\('/Users/julius/AI/proj1/cloudblocks/package.json'\\); const d = pkg.dependencies; const dev = pkg.devDependencies; console.log\\('electron:', dev.electron\\); console.log\\('react:', dev.react\\); console.log\\('xyflow:', d['@xyflow/react']\\); console.log\\('zustand:', d.zustand\\); console.log\\('tailwindcss:', dev.tailwindcss\\); console.log\\('vitest:', dev.vitest\\); console.log\\('electron-vite:', dev['electron-vite']\\);\")",
+      "Bash(cd /Users/julius/AI/proj1/cloudblocks && npx vitest run tests/main/preload.test.ts 2>&1 | tail -15)"
+    ]
+  }
+}
