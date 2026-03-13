@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useCloudStore, Settings } from '../store/cloud'
+import type { Theme } from '../types/cloud'
 import { applyTheme } from '../utils/applyTheme'
 
 interface SettingsPanelProps {
@@ -39,6 +40,14 @@ export default function SettingsPanel({ onClose }: SettingsPanelProps) {
     marginBottom: 16,
   }
 
+  const THEME_META: Record<Theme, { label: string; accent: string }> = {
+    dark:          { label: 'Dark',             accent: '#FF9900' },
+    light:         { label: 'Light',            accent: '#e07800' },
+    solarized:     { label: 'Solarized Dark',   accent: '#2aa198' },
+    'rose-pine':   { label: 'Rosé Pine',        accent: '#eb6f92' },
+    catppuccin:    { label: 'Catppuccin Mocha', accent: '#fab387' },
+  }
+
   return (
     <div style={overlay} onClick={e => e.target === e.currentTarget && onClose()}>
       <div style={panel}>
@@ -76,24 +85,35 @@ export default function SettingsPanel({ onClose }: SettingsPanelProps) {
           <div style={{ fontSize: 9, color: 'var(--cb-text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 6 }}>
             Theme
           </div>
-          <div style={{ display: 'flex', gap: 6 }}>
-            {(['dark', 'light'] as const).map((t) => (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+            {(Object.entries(THEME_META) as [Theme, { label: string; accent: string }][]).map(([t, { label, accent }]) => (
               <button
                 key={t}
                 onClick={() => setLocal((f) => ({ ...f, theme: t }))}
                 style={{
-                  background:    local.theme === t ? 'var(--cb-accent-subtle)' : 'var(--cb-bg-elevated)',
-                  border:        `1px solid ${local.theme === t ? 'var(--cb-accent)' : 'var(--cb-border)'}`,
+                  display:       'flex',
+                  alignItems:    'center',
+                  gap:           8,
+                  padding:       '4px 10px',
                   borderRadius:  3,
-                  padding:       '3px 14px',
-                  color:         local.theme === t ? 'var(--cb-accent)' : 'var(--cb-text-secondary)',
+                  border:        `1px solid ${local.theme === t ? accent : 'var(--cb-border)'}`,
+                  background:    local.theme === t ? 'var(--cb-accent-subtle)' : 'transparent',
+                  color:         local.theme === t ? accent : 'var(--cb-text-secondary)',
                   fontFamily:    'monospace',
                   fontSize:      10,
                   cursor:        'pointer',
-                  textTransform: 'capitalize',
+                  textAlign:     'left',
                 }}
               >
-                {t}
+                <span style={{
+                  width:        10,
+                  height:       10,
+                  borderRadius: '50%',
+                  background:   accent,
+                  flexShrink:   0,
+                  display:      'inline-block',
+                }} />
+                {label}
               </button>
             ))}
           </div>
