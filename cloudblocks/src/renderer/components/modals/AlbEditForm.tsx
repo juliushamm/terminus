@@ -5,11 +5,11 @@ import type { AlbEditParams } from '../../types/edit'
 interface Props { node: CloudNode; onChange: (p: AlbEditParams) => void; showErrors?: boolean }
 
 const inputStyle = (err: boolean): React.CSSProperties => ({
-  width: '100%', background: '#060d14', border: `1px solid ${err ? '#ff5f57' : '#30363d'}`,
-  borderRadius: 3, padding: '3px 6px', color: '#eee', fontFamily: 'monospace', fontSize: 10,
+  width: '100%', background: 'var(--cb-bg-panel)', border: `1px solid ${err ? '#ff5f57' : 'var(--cb-border)'}`,
+  borderRadius: 3, padding: '3px 6px', color: 'var(--cb-text-primary)', fontFamily: 'monospace', fontSize: 10,
   boxSizing: 'border-box' as const,
 })
-const label: React.CSSProperties = { fontSize: 9, color: '#555', textTransform: 'uppercase', marginBottom: 2, marginTop: 8 }
+const label: React.CSSProperties = { fontSize: 9, color: 'var(--cb-text-muted)', textTransform: 'uppercase', marginBottom: 2, marginTop: 8 }
 
 export default function AlbEditForm({ node, onChange, showErrors }: Props) {
   const [name, setName] = useState((node.metadata.name as string) ?? node.label)

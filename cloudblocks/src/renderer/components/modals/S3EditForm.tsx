@@ -15,8 +15,8 @@ export default function S3EditForm({ node, onChange }: Props) {
 
   return (
     <div>
-      <label style={row}><input type="checkbox" checked={versioning} onChange={e => { setVersioning(e.target.checked); emit({ versioning: e.target.checked }) }} /><span style={{ fontSize: 10, color: '#aaa' }}>Versioning</span></label>
-      <label style={row}><input type="checkbox" checked={blockPublic} onChange={e => { setBlockPublic(e.target.checked); emit({ blockPublicAccess: e.target.checked }) }} /><span style={{ fontSize: 10, color: '#aaa' }}>Block public access</span></label>
+      <label style={row}><input type="checkbox" checked={versioning} onChange={e => { setVersioning(e.target.checked); emit({ versioning: e.target.checked }) }} /><span style={{ fontSize: 10, color: 'var(--cb-text-secondary)' }}>Versioning</span></label>
+      <label style={row}><input type="checkbox" checked={blockPublic} onChange={e => { setBlockPublic(e.target.checked); emit({ blockPublicAccess: e.target.checked }) }} /><span style={{ fontSize: 10, color: 'var(--cb-text-secondary)' }}>Block public access</span></label>
     </div>
   )
 }
