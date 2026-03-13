@@ -14,6 +14,7 @@ function settingsPath(): string {
 const DEFAULT_SETTINGS = {
   deleteConfirmStyle: 'type-to-confirm' as const,
   scanInterval: 30 as const,
+  theme: 'dark' as const,
 }
 
 let scanner:   ResourceScanner | null = null

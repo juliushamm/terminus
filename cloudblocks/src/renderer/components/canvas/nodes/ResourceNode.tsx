@@ -84,7 +84,7 @@ export function ResourceNode({ data, selected }: NodeProps) {
       {/* Resource label */}
       <div
         className="text-[11px] font-medium leading-tight"
-        style={{ color: '#d0d8e4', maxWidth: 160, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
+        style={{ color: 'var(--cb-text-primary)', maxWidth: 160, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
       >
         {d.label}
       </div>

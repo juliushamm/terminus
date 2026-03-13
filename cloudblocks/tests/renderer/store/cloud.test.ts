@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest'
-import { useCloudStore } from '../../../src/renderer/store/cloud'
+import { useCloudStore, createCloudStore } from '../../../src/renderer/store/cloud'
 import type { CloudNode, ScanDelta } from '../../../src/renderer/types/cloud'
 
 const makeNode = (id: string): CloudNode => ({
@@ -39,5 +39,12 @@ describe('useCloudStore', () => {
   it('sets scan status', () => {
     useCloudStore.getState().setScanStatus('scanning')
     expect(useCloudStore.getState().scanStatus).toBe('scanning')
+  })
+})
+
+describe('theme defaults', () => {
+  it('DEFAULT_SETTINGS includes theme: dark', () => {
+    const store = createCloudStore()
+    expect(store.getState().settings.theme).toBe('dark')
   })
 })

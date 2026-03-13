@@ -29,7 +29,7 @@ function deriveEdges(nodes: CloudNode[]): Edge[] {
       source: n.parentId!,
       target: n.id,
       type:   'step',
-      style:  { stroke: '#2a3a4a', strokeWidth: 1.5 },
+      style:  { stroke: 'var(--cb-border-strong)', strokeWidth: 1.5 },
     }))
 }
 
