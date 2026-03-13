@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useCloudStore, Settings } from '../store/cloud'
+import { applyTheme } from '../utils/applyTheme'
 
 interface SettingsPanelProps {
   onClose: () => void
@@ -17,6 +18,7 @@ export default function SettingsPanel({ onClose }: SettingsPanelProps) {
   const handleSave = async () => {
     try {
       await saveSettings(local)
+      applyTheme(local.theme)
     } finally {
       onClose()
     }
@@ -69,8 +71,32 @@ export default function SettingsPanel({ onClose }: SettingsPanelProps) {
           <option value="manual">Manual only</option>
         </select>
 
-        <div style={{ fontSize: 10, color: '#555', marginBottom: 16 }}>
-          Theme — coming in M4
+        {/* Theme */}
+        <div style={{ marginBottom: 16 }}>
+          <div style={{ fontSize: 9, color: 'var(--cb-text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 6 }}>
+            Theme
+          </div>
+          <div style={{ display: 'flex', gap: 6 }}>
+            {(['dark', 'light'] as const).map((t) => (
+              <button
+                key={t}
+                onClick={() => setLocal((f) => ({ ...f, theme: t }))}
+                style={{
+                  background:    local.theme === t ? 'var(--cb-accent-subtle)' : 'var(--cb-bg-elevated)',
+                  border:        `1px solid ${local.theme === t ? 'var(--cb-accent)' : 'var(--cb-border)'}`,
+                  borderRadius:  3,
+                  padding:       '3px 14px',
+                  color:         local.theme === t ? 'var(--cb-accent)' : 'var(--cb-text-secondary)',
+                  fontFamily:    'monospace',
+                  fontSize:      10,
+                  cursor:        'pointer',
+                  textTransform: 'capitalize',
+                }}
+              >
+                {t}
+              </button>
+            ))}
+          </div>
         </div>
 
         <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
