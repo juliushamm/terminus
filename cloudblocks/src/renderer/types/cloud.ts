@@ -39,7 +39,7 @@ export interface AwsProfile {
   region?: string
 }
 
-export type Theme = 'dark' | 'light'
+export type Theme = 'dark' | 'light' | 'solarized' | 'rose-pine' | 'catppuccin'
 
 export interface Settings {
   deleteConfirmStyle: 'type-to-confirm' | 'command-drawer'

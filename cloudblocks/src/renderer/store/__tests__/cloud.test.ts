@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { useCloudStore, createCloudStore } from '../cloud'
+import type { Theme } from '../../types/cloud'
 
 beforeEach(() => {
   useCloudStore.setState({
@@ -114,5 +115,14 @@ describe('theme defaults', () => {
   it('DEFAULT_SETTINGS includes theme: dark', () => {
     const store = createCloudStore()
     expect(store.getState().settings.theme).toBe('dark')
+  })
+
+  it('Theme type includes all five values', () => {
+    const themes: Theme[] = ['dark', 'light', 'solarized', 'rose-pine', 'catppuccin']
+    themes.forEach(t => {
+      const store = createCloudStore()
+      store.setState(s => ({ settings: { ...s.settings, theme: t } }))
+      expect(store.getState().settings.theme).toBe(t)
+    })
   })
 })
