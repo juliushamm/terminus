@@ -36,6 +36,14 @@ export default function App(){
   useEffect(() => {
     window.cloudblocks.listProfiles().then(setProfiles)
     useCloudStore.getState().loadSettings()
+
+    window.cloudblocks.getThemeOverrides().then((overrides) => {
+      if (Object.keys(overrides).length === 0) return
+      const el = document.getElementById('cb-theme-overrides') ?? document.createElement('style')
+      el.id = 'cb-theme-overrides'
+      el.textContent = `:root { ${Object.entries(overrides).map(([k, v]) => `${k}: ${v}`).join('; ')} }`
+      if (!el.parentElement) document.head.appendChild(el)
+    })
   }, [])
 
   const handleDeleteConfirm = (node: CloudNode, opts: DeleteOptions) => {
