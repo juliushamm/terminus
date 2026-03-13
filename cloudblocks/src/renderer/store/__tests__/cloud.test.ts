@@ -109,3 +109,10 @@ describe('activeCreate', () => {
     expect(useCloudStore.getState().activeCreate).toBeNull()
   })
 })
+
+describe('theme defaults', () => {
+  it('DEFAULT_SETTINGS includes theme: dark', () => {
+    const store = createCloudStore()
+    expect(store.getState().settings.theme).toBe('dark')
+  })
+})

@@ -1,11 +1,13 @@
 import { create, createStore } from 'zustand'
 import type { CloudNode, ScanDelta, Settings } from '../types/cloud'
+import { applyTheme } from '../utils/applyTheme'
 
 export type { Settings }
 
 const DEFAULT_SETTINGS: Settings = {
   deleteConfirmStyle: 'type-to-confirm',
   scanInterval: 30,
+  theme: 'dark',
 }
 
 interface CloudState {
@@ -97,6 +99,7 @@ export const useCloudStore = create<CloudState>((set) => ({
 
   loadSettings: async () => {
     const s = await window.cloudblocks.getSettings()
+    applyTheme(s.theme ?? 'dark')
     set({ settings: s })
   },
   saveSettings: async (s: Settings) => {

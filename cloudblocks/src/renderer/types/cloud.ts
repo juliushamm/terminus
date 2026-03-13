@@ -39,7 +39,10 @@ export interface AwsProfile {
   region?: string
 }
 
+export type Theme = 'dark' | 'light'
+
 export interface Settings {
   deleteConfirmStyle: 'type-to-confirm' | 'command-drawer'
   scanInterval: 15 | 30 | 60 | 'manual'
+  theme: Theme
 }
