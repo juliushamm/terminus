@@ -6,6 +6,7 @@ import { TopologyView } from './TopologyView'
 import { GraphView } from './GraphView'
 import { CanvasContextMenu } from './CanvasContextMenu'
 import { CanvasToast } from '../CanvasToast'
+import { SaveViewModal } from './SaveViewModal'
 import type { CloudNode } from '../../types/cloud'
 
 function relativeTime(date: Date): string {
@@ -29,6 +30,11 @@ function CanvasInner({ onScan, onNodeContextMenu }: Props){
   const lastScannedAt = useCloudStore((s) => s.lastScannedAt)
   const nodes         = useCloudStore((s) => s.nodes)
   const profile       = useCloudStore((s) => s.profile)
+  const savedViews     = useUIStore((s) => s.savedViews)
+  const activeViewSlot = useUIStore((s) => s.activeViewSlot)
+  const saveView       = useUIStore((s) => s.saveView)
+  const loadView       = useUIStore((s) => s.loadView)
+  const [modalSlot, setModalSlot] = useState<number | null>(null)
   const [contextMenu, setContextMenu] = useState<{ x: number; y: number } | null>(null)
   const [, forceUpdate] = useState(0)
 
@@ -55,6 +61,27 @@ function CanvasInner({ onScan, onNodeContextMenu }: Props){
     e.preventDefault()
     setContextMenu({ x: e.clientX, y: e.clientY })
   }
+
+  function handleSlotClick(slot: number): void {
+    const saved = savedViews[slot]
+    if (saved === null) {
+      setModalSlot(slot)                                       // empty → open modal to create
+    } else if (slot === activeViewSlot) {
+      setModalSlot(slot)                                       // active → open modal to rename
+    } else {
+      loadView(slot, view, () => fitView({ duration: 300 }))  // saved non-active → load
+    }
+  }
+
+  function handleModalSave(name: string): void {
+    if (modalSlot === null) return
+    saveView(modalSlot, name, view)
+    setModalSlot(null)
+  }
+
+  const activeViewName = activeViewSlot !== null
+    ? (savedViews[activeViewSlot]?.name ?? null)
+    : null
 
   return (
     <div className="relative flex-1 h-full" onContextMenu={handleContextMenu}>
@@ -99,6 +126,37 @@ function CanvasInner({ onScan, onNodeContextMenu }: Props){
             {v === 'topology' ? '⊞ Topology' : '◈ Graph'}
           </button>
         ))}
+
+        <div className="w-px h-3.5 bg-gray-700" />
+
+        {/* Saved view slots */}
+        {([0, 1, 2, 3] as const).map((slot) => {
+          const saved    = savedViews[slot]
+          const isActive = slot === activeViewSlot
+          return (
+            <button
+              key={slot}
+              onClick={() => handleSlotClick(slot)}
+              title={saved?.name ?? `Empty slot ${slot + 1}`}
+              style={{
+                ...btnBase,
+                background: isActive ? 'var(--cb-bg-elevated)' : 'transparent',
+                border: `1px solid ${saved ? (isActive ? 'var(--cb-accent)' : 'var(--cb-border-strong)') : 'var(--cb-border)'}`,
+                color:  saved ? (isActive ? 'var(--cb-accent)' : 'var(--cb-text-secondary)') : '#444',
+                minWidth: '20px',
+              }}
+            >
+              {slot + 1}
+            </button>
+          )
+        })}
+
+        {activeViewName && (
+          <span style={{ fontSize: 10, color: 'var(--cb-text-muted)', fontFamily: 'monospace',
+                         whiteSpace: 'nowrap', maxWidth: 80, overflow: 'hidden', textOverflow: 'ellipsis' }}>
+            {activeViewName}
+          </span>
+        )}
       </div>
 
       {view === 'topology'
@@ -162,6 +220,15 @@ function CanvasInner({ onScan, onNodeContextMenu }: Props){
       )}
 
       <CanvasToast />
+
+      {modalSlot !== null && (
+        <SaveViewModal
+          slot={modalSlot}
+          initialName={savedViews[modalSlot]?.name ?? ''}
+          onSave={handleModalSave}
+          onCancel={() => setModalSlot(null)}
+        />
+      )}
     </div>
   )
 }
