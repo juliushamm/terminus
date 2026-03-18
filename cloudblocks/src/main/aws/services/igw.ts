@@ -7,13 +7,14 @@ export async function listInternetGateways(client: EC2Client, region: string): P
     return (res.InternetGateways ?? []).map((item): CloudNode => {
       const id = item.InternetGatewayId ?? ''
       const label = item.Tags?.find(t => t.Key === 'Name')?.Value ?? id
+      const state = item.Attachments?.[0]?.State as string | undefined
       return {
         id,
         type:     'igw',
         label,
-        status:   item.Attachments?.[0]?.State === 'available' ? 'running' : 'unknown',
+        status:   state === 'available' ? 'running' : 'unknown',
         region,
-        metadata: { state: item.Attachments?.[0]?.State ?? '' },
+        metadata: { state: state ?? '' },
         parentId: item.Attachments?.[0]?.VpcId,
       }
     })
