@@ -14,6 +14,10 @@ export const IPC = {
   SETTINGS_GET:    'settings:get',    // invoke → Settings
   SETTINGS_SET:    'settings:set',    // invoke → void
   THEME_OVERRIDES: 'theme:overrides',
+  CF_CREATE:       'cloudfront:create',     // invoke → { code: number }
+  CF_UPDATE:       'cloudfront:update',     // invoke → { code: number }
+  CF_DELETE:       'cloudfront:delete',     // invoke → { code: number }
+  CF_INVALIDATE:   'cloudfront:invalidate', // invoke → { code: number }
 } as const
 
 export type IpcChannel = typeof IPC[keyof typeof IPC]

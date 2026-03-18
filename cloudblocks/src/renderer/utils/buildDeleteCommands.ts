@@ -27,6 +27,8 @@ export function buildDeleteCommands(node: CloudNode, opts: DeleteOptions = {}): 
       return [['lambda', 'delete-function', '--function-name', node.id]]
     case 'alb':
       return [['elbv2', 'delete-load-balancer', '--load-balancer-arn', node.id]]
+    case 'acm':
+      return [['acm', 'delete-certificate', '--certificate-arn', node.id]]
     default:
       return []
   }

@@ -1,5 +1,7 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import type { ScanDelta } from '../renderer/types/cloud'
+import type { CloudFrontParams } from '../renderer/types/create'
+import type { CloudFrontEditParams } from '../renderer/types/edit'
 import { IPC } from '../main/ipc/channels'
 
 contextBridge.exposeInMainWorld('cloudblocks', {
@@ -48,4 +50,13 @@ contextBridge.exposeInMainWorld('cloudblocks', {
     ipcRenderer.on(IPC.CLI_DONE, handler)
     return () => ipcRenderer.removeListener(IPC.CLI_DONE, handler)
   },
+
+  // CloudFront SDK write operations
+  createCloudFront:    (params: CloudFrontParams)                  => ipcRenderer.invoke(IPC.CF_CREATE, params),
+  updateCloudFront:    (id: string, params: CloudFrontEditParams)  => ipcRenderer.invoke(IPC.CF_UPDATE, id, params),
+  deleteCloudFront:    (id: string)                                => ipcRenderer.invoke(IPC.CF_DELETE, id),
+  invalidateCloudFront:(id: string, cfPath: string)               => ipcRenderer.invoke(IPC.CF_INVALIDATE, id, cfPath),
+
+  // ACM delete via CLI
+  deleteAcm: (arn: string) => ipcRenderer.invoke(IPC.CLI_RUN, [['acm', 'delete-certificate', '--certificate-arn', arn]]),
 })

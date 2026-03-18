@@ -8,13 +8,15 @@ interface Props {
 }
 
 const CREATABLE = [
-  { resource: 'vpc',    label: 'New VPC' },
-  { resource: 'ec2',    label: 'New EC2 Instance' },
-  { resource: 'sg',     label: 'New Security Group' },
-  { resource: 's3',     label: 'New S3 Bucket' },
-  { resource: 'rds',    label: 'New RDS Instance' },
-  { resource: 'lambda', label: 'New Lambda Function' },
-  { resource: 'alb',    label: 'New ALB' },
+  { resource: 'vpc',        label: 'New VPC' },
+  { resource: 'ec2',        label: 'New EC2 Instance' },
+  { resource: 'sg',         label: 'New Security Group' },
+  { resource: 's3',         label: 'New S3 Bucket' },
+  { resource: 'rds',        label: 'New RDS Instance' },
+  { resource: 'lambda',     label: 'New Lambda Function' },
+  { resource: 'alb',        label: 'New ALB' },
+  { resource: 'acm',        label: 'New ACM Certificate' },
+  { resource: 'cloudfront', label: 'New CloudFront Distribution' },
 ] as const
 
 export function CanvasContextMenu({ x, y, onClose }: Props){

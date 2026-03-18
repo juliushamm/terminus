@@ -1,7 +1,7 @@
 import { useRef, useEffect, useState } from 'react'
 import { useCloudStore } from '../../store/cloud'
 import { buildCommands } from '../../utils/buildCommand'
-import type { CreateParams } from '../../types/create'
+import type { CreateParams, CloudFrontParams } from '../../types/create'
 import type { NodeType } from '../../types/cloud'
 import { VpcForm } from './VpcForm'
 import { Ec2Form } from './Ec2Form'
@@ -10,40 +10,48 @@ import { S3Form } from './S3Form'
 import { RdsForm } from './RdsForm'
 import { LambdaForm } from './LambdaForm'
 import { AlbForm } from './AlbForm'
+import { AcmForm } from './AcmForm'
+import { CloudFrontForm } from './CloudFrontForm'
 
 function validateParams(params: CreateParams | null): boolean {
   if (!params) return false
   switch (params.resource) {
-    case 'vpc':    return !!(params.name && params.cidr)
-    case 'ec2':    return !!(params.name && params.amiId && params.instanceType)
-    case 'sg':     return !!(params.name && params.description && params.vpcId)
-    case 's3':     return !!(params.bucketName)
-    case 'rds':    return !!(params.identifier && params.masterUsername && params.masterPassword)
-    case 'lambda': return !!(params.name && params.roleArn && params.handler)
-    case 'alb':    return !!(params.name && params.subnetIds.length >= 2 && params.securityGroupIds.length >= 1)
-    default:       return true
+    case 'vpc':        return !!(params.name && params.cidr)
+    case 'ec2':        return !!(params.name && params.amiId && params.instanceType)
+    case 'sg':         return !!(params.name && params.description && params.vpcId)
+    case 's3':         return !!(params.bucketName)
+    case 'rds':        return !!(params.identifier && params.masterUsername && params.masterPassword)
+    case 'lambda':     return !!(params.name && params.roleArn && params.handler)
+    case 'alb':        return !!(params.name && params.subnetIds.length >= 2 && params.securityGroupIds.length >= 1)
+    case 'acm':        return !!(params.domainName)
+    case 'cloudfront': return !!(params.comment && params.origins.length > 0)
+    default:           return true
   }
 }
 
 const TITLES: Record<string, string> = {
-  vpc:    'New VPC',
-  ec2:    'New EC2 Instance',
-  sg:     'New Security Group',
-  s3:     'New S3 Bucket',
-  rds:    'New RDS Instance',
-  lambda: 'New Lambda Function',
-  alb:    'New ALB',
+  vpc:        'New VPC',
+  ec2:        'New EC2 Instance',
+  sg:         'New Security Group',
+  s3:         'New S3 Bucket',
+  rds:        'New RDS Instance',
+  lambda:     'New Lambda Function',
+  alb:        'New ALB',
+  acm:        'New ACM Certificate',
+  cloudfront: 'New CloudFront Distribution',
 }
 
 // Maps form resource identifier to CloudNode NodeType
 const RESOURCE_TO_NODE_TYPE: Record<string, NodeType> = {
-  vpc:    'vpc',
-  ec2:    'ec2',
-  sg:     'security-group',
-  s3:     's3',
-  rds:    'rds',
-  lambda: 'lambda',
-  alb:    'alb',
+  vpc:        'vpc',
+  ec2:        'ec2',
+  sg:         'security-group',
+  s3:         's3',
+  rds:        'rds',
+  lambda:     'lambda',
+  alb:        'alb',
+  acm:        'acm',
+  cloudfront: 'cloudfront',
 }
 
 export function CreateModal(){
@@ -75,6 +83,10 @@ export function CreateModal(){
   function handleChange(params: CreateParams): void {
     paramsRef.current = params
     try {
+      if (params.resource === 'cloudfront') {
+        setCommandPreview(['[CloudFront distribution will be created via SDK]'])
+        return
+      }
       const preview = buildCommands(params).map(argv => 'aws ' + argv.join(' '))
       setCommandPreview(preview)
     } catch {
@@ -109,8 +121,11 @@ export function CreateModal(){
     })
     clearCliOutput()
 
-    const commands = buildCommands(paramsRef.current!)
-    window.cloudblocks.runCli(commands)
+    const runPromise = paramsRef.current!.resource === 'cloudfront'
+      ? window.cloudblocks.createCloudFront(paramsRef.current! as CloudFrontParams)
+      : window.cloudblocks.runCli(buildCommands(paramsRef.current!))
+
+    runPromise
       .then((result) => {
         if (pendingIdRef.current) removePendingNode(pendingIdRef.current)
         pendingIdRef.current = null
@@ -146,13 +161,15 @@ export function CreateModal(){
           {TITLES[activeCreate.resource] ?? 'New Resource'}
         </div>
 
-        {activeCreate.resource === 'vpc'    && <VpcForm    onChange={handleChange} showErrors={showErrors} />}
-        {activeCreate.resource === 'ec2'    && <Ec2Form    onChange={handleChange} showErrors={showErrors} />}
-        {activeCreate.resource === 'sg'     && <SgForm     onChange={handleChange} showErrors={showErrors} />}
-        {activeCreate.resource === 's3'     && <S3Form     onChange={handleChange} showErrors={showErrors} />}
-        {activeCreate.resource === 'rds'    && <RdsForm    onChange={handleChange} showErrors={showErrors} />}
-        {activeCreate.resource === 'lambda' && <LambdaForm onChange={handleChange} showErrors={showErrors} />}
-        {activeCreate.resource === 'alb'    && <AlbForm    onChange={handleChange} showErrors={showErrors} />}
+        {activeCreate.resource === 'vpc'        && <VpcForm        onChange={handleChange} showErrors={showErrors} />}
+        {activeCreate.resource === 'ec2'        && <Ec2Form        onChange={handleChange} showErrors={showErrors} />}
+        {activeCreate.resource === 'sg'         && <SgForm         onChange={handleChange} showErrors={showErrors} />}
+        {activeCreate.resource === 's3'         && <S3Form         onChange={handleChange} showErrors={showErrors} />}
+        {activeCreate.resource === 'rds'        && <RdsForm        onChange={handleChange} showErrors={showErrors} />}
+        {activeCreate.resource === 'lambda'     && <LambdaForm     onChange={handleChange} showErrors={showErrors} />}
+        {activeCreate.resource === 'alb'        && <AlbForm        onChange={handleChange} showErrors={showErrors} />}
+        {activeCreate.resource === 'acm'        && <AcmForm        onChange={handleChange} showErrors={showErrors} />}
+        {activeCreate.resource === 'cloudfront' && <CloudFrontForm onChange={handleChange} showErrors={showErrors} />}
 
         <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '16px', paddingTop: '10px', borderTop: '1px solid var(--cb-border-strong)' }}>
           <button

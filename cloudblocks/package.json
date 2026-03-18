@@ -24,6 +24,8 @@
     "test:ui": "vitest --ui"
   },
   "dependencies": {
+    "@aws-sdk/client-acm": "^3.1011.0",
+    "@aws-sdk/client-cloudfront": "^3.1011.0",
     "@aws-sdk/client-ec2": "^3.1007.0",
     "@aws-sdk/client-elastic-load-balancing-v2": "^3.1007.0",
     "@aws-sdk/client-lambda": "^3.1007.0",

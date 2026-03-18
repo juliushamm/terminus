@@ -86,6 +86,10 @@ export function buildEditCommands(node: CloudNode, params: EditParams): string[]
     case 'alb':
       return [['elbv2', 'add-tags', '--resource-arns', node.id, '--tags', `Key=Name,Value=${params.name}`]]
 
+    case 'cloudfront':
+      // CloudFront edits use SDK via IPC (CF_UPDATE), not CLI
+      return []
+
     default:
       return []
   }

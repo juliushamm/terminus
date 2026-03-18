@@ -1,4 +1,4 @@
-import type { CreateParams, SgParams, S3Params, RdsParams, LambdaParams, AlbParams } from '../types/create'
+import type { CreateParams, SgParams, S3Params, RdsParams, LambdaParams, AlbParams, AcmParams } from '../types/create'
 
 /**
  * Returns an array of argv arrays — one per aws CLI command.
@@ -39,9 +39,11 @@ export function buildCommands(params: CreateParams): string[][] {
     case 's3':
       return buildS3Commands(params)
 
-    case 'rds':    return buildRdsCommands(params as RdsParams)
-    case 'lambda': return buildLambdaCommands(params as LambdaParams)
-    case 'alb':    return buildAlbCommands(params as AlbParams)
+    case 'rds':        return buildRdsCommands(params as RdsParams)
+    case 'lambda':     return buildLambdaCommands(params as LambdaParams)
+    case 'alb':        return buildAlbCommands(params as AlbParams)
+    case 'acm':        return buildAcmCommands(params as AcmParams)
+    case 'cloudfront': return []   // CloudFront create uses SDK via IPC, not CLI
   }
 }
 
@@ -107,6 +109,18 @@ function buildSgCommands(params: SgParams): string[][] {
   ])
 
   return [create, ...authorizes]
+}
+
+function buildAcmCommands(p: AcmParams): string[][] {
+  const args = [
+    'acm', 'request-certificate',
+    '--domain-name', p.domainName,
+    '--validation-method', p.validationMethod,
+  ]
+  if (p.subjectAlternativeNames.length > 0) {
+    args.push('--subject-alternative-names', ...p.subjectAlternativeNames)
+  }
+  return [args]
 }
 
 function buildS3Commands(params: S3Params): string[][] {

@@ -10,6 +10,8 @@ export type NodeType =
   | 'alb'
   | 'security-group'
   | 'igw'
+  | 'acm'
+  | 'cloudfront'
 
 export interface CloudNode {
   id: string

@@ -61,7 +61,11 @@ export default function App(){
     }
   }
 
-  const handleQuickAction = (node: CloudNode, action: 'stop' | 'start' | 'reboot') => {
+  const handleQuickAction = (node: CloudNode, action: 'stop' | 'start' | 'reboot' | 'invalidate', meta?: { path?: string }) => {
+    if (action === 'invalidate') {
+      window.cloudblocks.invalidateCloudFront(node.id, meta?.path ?? '/*')
+      return
+    }
     const cmds = buildQuickActionCommand(node, action)
     setCommandPreview(cmds.map(a => 'aws ' + a.join(' ')))
     setPendingCommand(cmds)

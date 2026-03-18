@@ -5,23 +5,37 @@ import { useCloudStore } from '../../store/cloud'
 import { ResourceNode } from './nodes/ResourceNode'
 import { VpcNode } from './nodes/VpcNode'
 import { SubnetNode } from './nodes/SubnetNode'
+import { GlobalZoneNode } from './nodes/GlobalZoneNode'
+import { AcmNode } from './nodes/AcmNode'
+import { CloudFrontNode } from './nodes/CloudFrontNode'
 import type { CloudNode } from '../../types/cloud'
 
-const NODE_TYPES = { resource: ResourceNode, vpc: VpcNode, subnet: SubnetNode }
+const NODE_TYPES = {
+  resource:   ResourceNode,
+  vpc:        VpcNode,
+  subnet:     SubnetNode,
+  globalZone: GlobalZoneNode,
+  acm:        AcmNode,
+  cloudfront: CloudFrontNode,
+}
 
 const CONTAINER_TYPES = new Set(['vpc', 'subnet'])
 
-const RES_W     = 150   // wider nodes for readable text
-const RES_H     = 66   // taller nodes: type row + label row + optional badge
+const RES_W     = 150
+const RES_H     = 66
 const RES_COLS  = 2
 const RES_GAP_X = 12
 const RES_GAP_Y = 12
 const SUB_PAD_X = 12
-const SUB_PAD_Y = 38  // space for subnet header
+const SUB_PAD_Y = 38
 const SUB_GAP   = 16
 const VPC_PAD   = 16
 const VPC_GAP   = 48
-const VPC_LABEL = 32  // space for VPC header bar
+const VPC_LABEL = 32
+
+// Global zone constants
+const GLOBAL_PAD   = 16
+const GLOBAL_LABEL = 32
 
 function subnetSize(resourceCount: number): { w: number; h: number } {
   const cols = Math.min(resourceCount || 1, RES_COLS)
@@ -32,18 +46,62 @@ function subnetSize(resourceCount: number): { w: number; h: number } {
   }
 }
 
-// Lays out container nodes (VPCs, subnets) as parent nodes and
-// resource nodes as children inside them. All sizes are computed
-// from content so nothing overflows.
 function buildFlowNodes(cloudNodes: CloudNode[], selectedId: string | null): Node[] {
   const nodes: Node[] = []
 
-  // Bucket nodes by role
-  const vpcs    = cloudNodes.filter((n) => n.type === 'vpc')
-  const subnets = cloudNodes.filter((n) => n.type === 'subnet')
-  const resources = cloudNodes.filter((n) => !CONTAINER_TYPES.has(n.type))
+  // Separate global nodes from regional nodes
+  const globalNodes = cloudNodes.filter((n) => n.region === 'global')
+  const regionalNodes = cloudNodes.filter((n) => n.region !== 'global')
 
-  const subnetsByVpc    = new Map<string, CloudNode[]>()
+  // Layout global zone
+  let globalZoneHeight = 0
+  let vpcY = 40
+
+  if (globalNodes.length > 0) {
+    const GLOBAL_COLS = 5
+    const globalRows  = Math.ceil(globalNodes.length / GLOBAL_COLS)
+    const globalW     = GLOBAL_PAD * 2 + Math.min(globalNodes.length, GLOBAL_COLS) * (RES_W + RES_GAP_X) - RES_GAP_X
+    globalZoneHeight  = GLOBAL_LABEL + GLOBAL_PAD + globalRows * (RES_H + RES_GAP_Y)
+
+    const GLOBAL_ZONE_ID = '__global_zone__'
+    nodes.push({
+      id:       GLOBAL_ZONE_ID,
+      type:     'globalZone',
+      position: { x: 40, y: 40 },
+      style:    { width: Math.max(400, globalW), height: globalZoneHeight },
+      data:     {},
+      selectable: false,
+      draggable:  false,
+    })
+
+    // Place global resource nodes inside the zone
+    globalNodes.forEach((n, i) => {
+      const col = i % GLOBAL_COLS
+      const row = Math.floor(i / GLOBAL_COLS)
+      const nodeType = n.type === 'acm' ? 'acm' : n.type === 'cloudfront' ? 'cloudfront' : 'resource'
+      nodes.push({
+        id:       n.id,
+        type:     nodeType,
+        parentId: GLOBAL_ZONE_ID,
+        extent:   'parent',
+        position: {
+          x: GLOBAL_PAD + col * (RES_W + RES_GAP_X),
+          y: GLOBAL_LABEL + row * (RES_H + RES_GAP_Y),
+        },
+        data:     { label: n.label, nodeType: n.type, status: n.status },
+        selected: n.id === selectedId,
+      })
+    })
+
+    vpcY = 40 + globalZoneHeight + 60
+  }
+
+  // Bucket regional nodes by role
+  const vpcs    = regionalNodes.filter((n) => n.type === 'vpc')
+  const subnets = regionalNodes.filter((n) => n.type === 'subnet')
+  const resources = regionalNodes.filter((n) => !CONTAINER_TYPES.has(n.type))
+
+  const subnetsByVpc      = new Map<string, CloudNode[]>()
   const resourcesByParent = new Map<string, CloudNode[]>()
   const rootResources: CloudNode[] = []
 
@@ -59,8 +117,9 @@ function buildFlowNodes(cloudNodes: CloudNode[], selectedId: string | null): Nod
     resourcesByParent.get(r.parentId)!.push(r)
   })
 
-  // Place VPCs, sizing each one from its content
+  // Place VPCs
   let vpcX = 40
+  let maxVpcHeight = 0
   vpcs.forEach((vpc) => {
     const vpcSubnets = subnetsByVpc.get(vpc.id) ?? []
     const subSizes   = vpcSubnets.map((s) => subnetSize((resourcesByParent.get(s.id) ?? []).length))
@@ -70,16 +129,17 @@ function buildFlowNodes(cloudNodes: CloudNode[], selectedId: string | null): Nod
     const directSize = subnetSize(directRes.length)
     const vpcW = Math.max(260, VPC_PAD * 2 + Math.max(totalSubW, directRes.length > 0 ? directSize.w : 0))
     const vpcH = VPC_LABEL + VPC_PAD + maxSubH + VPC_PAD + (directRes.length > 0 ? directSize.h + SUB_GAP : 0)
+    const vpcHFinal = Math.max(160, vpcH)
+    maxVpcHeight = Math.max(maxVpcHeight, vpcHFinal)
 
     nodes.push({
       id:       vpc.id,
       type:     'vpc',
-      position: { x: vpcX, y: 40 },
-      style:    { width: vpcW, height: Math.max(160, vpcH) },
+      position: { x: vpcX, y: vpcY },
+      style:    { width: vpcW, height: vpcHFinal },
       data:     { label: vpc.label, cidr: vpc.metadata.cidr as string | undefined },
     })
 
-    // Subnets in a single row inside the VPC
     let subX = VPC_PAD
     vpcSubnets.forEach((subnet, si) => {
       const { w: sw, h: sh } = subSizes[si]
@@ -93,7 +153,6 @@ function buildFlowNodes(cloudNodes: CloudNode[], selectedId: string | null): Nod
         data:     { label: subnet.label, isPublic: subnet.metadata.mapPublicIp, az: subnet.metadata.availabilityZone as string | undefined },
       })
 
-      // Resources inside this subnet
       const rNodes = resourcesByParent.get(subnet.id) ?? []
       rNodes.forEach((r, ri) => {
         const col = ri % RES_COLS
@@ -114,7 +173,6 @@ function buildFlowNodes(cloudNodes: CloudNode[], selectedId: string | null): Nod
       subX += sw + SUB_GAP
     })
 
-    // Resources attached directly to the VPC (e.g. ALBs, SGs without a subnet)
     const subnetBottom = VPC_LABEL + VPC_PAD + maxSubH + SUB_GAP
     directRes.forEach((r, ri) => {
       const col = ri % RES_COLS
@@ -136,20 +194,59 @@ function buildFlowNodes(cloudNodes: CloudNode[], selectedId: string | null): Nod
     vpcX += vpcW + VPC_GAP
   })
 
-  // Resources with no parent (S3, Lambda, ALB if not VPC-attached, etc.)
-  // rendered in a row below all VPCs
-  const ROOT_COLS = 5
+  // Root resources (no parent) — row below all VPCs
+  const ROOT_COLS  = 5
+  const rootY      = vpcY + maxVpcHeight + 60
   rootResources.forEach((r, i) => {
     nodes.push({
       id:       r.id,
       type:     'resource',
-      position: { x: 40 + (i % ROOT_COLS) * (RES_W + RES_GAP_X + 40), y: 520 + Math.floor(i / ROOT_COLS) * (RES_H + RES_GAP_Y + 20) },
+      position: { x: 40 + (i % ROOT_COLS) * (RES_W + RES_GAP_X + 40), y: rootY + Math.floor(i / ROOT_COLS) * (RES_H + RES_GAP_Y + 20) },
       data:     { label: r.label, nodeType: r.type, status: r.status },
       selected: r.id === selectedId,
     })
   })
 
   return nodes
+}
+
+// Build CloudFront → origin edges for topology view
+function buildTopologyEdges(cloudNodes: CloudNode[]): Edge[] {
+  const edges: Edge[] = []
+  const s3Nodes  = cloudNodes.filter((n) => n.type === 's3')
+  const albNodes = cloudNodes.filter((n) => n.type === 'alb')
+  const cfNodes  = cloudNodes.filter((n) => n.type === 'cloudfront')
+
+  cfNodes.forEach((cf) => {
+    const origins = (cf.metadata.origins ?? []) as Array<{ id: string; domainName: string; type: string }>
+    origins.forEach((origin) => {
+      // S3 match: origin domainName starts with <bucketName>.
+      const s3Match = s3Nodes.find((s) => origin.domainName.startsWith(s.id + '.'))
+      if (s3Match) {
+        edges.push({
+          id:     `cf-origin-${cf.id}-${s3Match.id}`,
+          source: cf.id,
+          target: s3Match.id,
+          type:   'step',
+          style:  { stroke: 'var(--cb-border-strong)', strokeWidth: 1.5 },
+        })
+        return
+      }
+      // ALB match: origin domainName === alb dnsName
+      const albMatch = albNodes.find((a) => origin.domainName === (a.metadata.dnsName as string))
+      if (albMatch) {
+        edges.push({
+          id:     `cf-origin-${cf.id}-${albMatch.id}`,
+          source: cf.id,
+          target: albMatch.id,
+          type:   'step',
+          style:  { stroke: 'var(--cb-border-strong)', strokeWidth: 1.5 },
+        })
+      }
+    })
+  })
+
+  return edges
 }
 
 interface TopologyViewProps {
@@ -159,8 +256,8 @@ interface TopologyViewProps {
 export function TopologyView({ onNodeContextMenu }: TopologyViewProps){
   const cloudNodes   = useCloudStore((s) => s.nodes)
   const pendingNodes = useCloudStore((s) => s.pendingNodes)
-  const selectNode = useCloudStore((s) => s.selectNode)
-  const selectedId = useCloudStore((s) => s.selectedNodeId)
+  const selectNode   = useCloudStore((s) => s.selectNode)
+  const selectedId   = useCloudStore((s) => s.selectedNodeId)
 
   const allNodes = useMemo(() => [...cloudNodes, ...pendingNodes], [cloudNodes, pendingNodes])
 
@@ -169,7 +266,7 @@ export function TopologyView({ onNodeContextMenu }: TopologyViewProps){
     [allNodes, selectedId],
   )
 
-  const flowEdges: Edge[] = []  // Topology view uses nesting, not edges
+  const flowEdges: Edge[] = useMemo(() => buildTopologyEdges(allNodes), [allNodes])
 
   return (
     <ReactFlow

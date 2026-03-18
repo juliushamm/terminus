@@ -13,6 +13,14 @@ export interface SgRule {
   cidr: string
 }
 
+export interface CloudFrontEditParams {
+  resource: 'cloudfront'
+  comment?: string
+  defaultRootObject?: string
+  certArn?: string
+  priceClass?: 'PriceClass_All' | 'PriceClass_100' | 'PriceClass_200'
+}
+
 export type EditParams =
   | VpcEditParams | Ec2EditParams | SgEditParams | RdsEditParams
-  | S3EditParams  | LambdaEditParams | AlbEditParams
+  | S3EditParams  | LambdaEditParams | AlbEditParams | CloudFrontEditParams

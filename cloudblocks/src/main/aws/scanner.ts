@@ -7,6 +7,8 @@ import { describeDBInstances } from './services/rds'
 import { listBuckets } from './services/s3'
 import { listFunctions } from './services/lambda'
 import { describeLoadBalancers } from './services/alb'
+import { listCertificates } from './services/acm'
+import { listDistributions } from './services/cloudfront'
 
 const POLL_INTERVAL_MS = 30_000
 
@@ -68,7 +70,7 @@ export class ResourceScanner {
     this.window.webContents.send(IPC.SCAN_STATUS, 'scanning')
 
     try {
-      const [instances, vpcs, subnets, sgs, dbs, buckets, fns, lbs] = await Promise.all([
+      const [instances, vpcs, subnets, sgs, dbs, buckets, fns, lbs, certs, distributions] = await Promise.all([
         describeInstances(this.clients.ec2, this.region),
         describeVpcs(this.clients.ec2, this.region),
         describeSubnets(this.clients.ec2, this.region),
@@ -77,9 +79,11 @@ export class ResourceScanner {
         listBuckets(this.clients.s3, this.region),
         listFunctions(this.clients.lambda, this.region),
         describeLoadBalancers(this.clients.alb, this.region),
+        listCertificates(this.clients.acm),
+        listDistributions(this.clients.cloudfront),
       ])
 
-      const nextNodes = [...instances, ...vpcs, ...subnets, ...sgs, ...dbs, ...buckets, ...fns, ...lbs]
+      const nextNodes = [...instances, ...vpcs, ...subnets, ...sgs, ...dbs, ...buckets, ...fns, ...lbs, ...certs, ...distributions]
       const delta = computeDelta(this.currentNodes, nextNodes)
 
       this.currentNodes = nextNodes

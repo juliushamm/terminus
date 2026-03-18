@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react'
 import type { CloudNode } from '../../types/cloud'
-import type { EditParams } from '../../types/edit'
+import type { EditParams, CloudFrontEditParams } from '../../types/edit'
 import { buildEditCommands } from '../../utils/buildEditCommands'
 import { useCloudStore } from '../../store/cloud'
 import VpcEditForm from './VpcEditForm'
@@ -10,6 +10,7 @@ import RdsEditForm from './RdsEditForm'
 import S3EditForm from './S3EditForm'
 import LambdaEditForm from './LambdaEditForm'
 import AlbEditForm from './AlbEditForm'
+import CloudFrontEditForm from './CloudFrontEditForm'
 
 interface EditModalProps {
   node: CloudNode | null
@@ -19,6 +20,7 @@ interface EditModalProps {
 const RESOURCE_LABELS: Record<string, string> = {
   vpc: 'VPC', ec2: 'EC2 Instance', 'security-group': 'Security Group',
   rds: 'RDS Instance', s3: 'S3 Bucket', lambda: 'Lambda Function', alb: 'Load Balancer',
+  cloudfront: 'CloudFront Distribution',
 }
 
 export default function EditModal({ node, onClose }: EditModalProps) {
@@ -38,16 +40,35 @@ export default function EditModal({ node, onClose }: EditModalProps) {
 
   const handleChange = (params: EditParams) => {
     paramsRef.current = params
+    if (params.resource === 'cloudfront') {
+      setCommandPreview(['[CloudFront distribution will be updated via SDK]'])
+      return
+    }
     const cmds = buildEditCommands(node, params)
     setCommandPreview(cmds.map(argv => 'aws ' + argv.join(' ')))
   }
 
   const handleRun = async () => {
     if (!paramsRef.current) { setShowErrors(true); return }
-    const cmds = buildEditCommands(node, paramsRef.current)
-    if (cmds.length === 0) { onClose(); return }
     setIsRunning(true)
     clearCliOutput()
+
+    if (paramsRef.current.resource === 'cloudfront') {
+      try {
+        const result = await window.cloudblocks.updateCloudFront(node.id, paramsRef.current as CloudFrontEditParams)
+        if (result.code === 0) {
+          setCommandPreview([])
+          onClose()
+          await window.cloudblocks.startScan()
+        }
+      } finally {
+        setIsRunning(false)
+      }
+      return
+    }
+
+    const cmds = buildEditCommands(node, paramsRef.current)
+    if (cmds.length === 0) { setIsRunning(false); onClose(); return }
     const unsubOutput = window.cloudblocks.onCliOutput(d => appendCliOutput(d))
     try {
       const result = await window.cloudblocks.runCli(cmds)
@@ -81,13 +102,14 @@ export default function EditModal({ node, onClose }: EditModalProps) {
           Edit {RESOURCE_LABELS[node.type] ?? node.type}
         </div>
 
-        {node.type === 'vpc'             && <VpcEditForm    node={node} onChange={handleChange} showErrors={showErrors} />}
-        {node.type === 'ec2'             && <Ec2EditForm    node={node} onChange={handleChange} />}
-        {node.type === 'security-group'  && <SgEditForm     node={node} onChange={handleChange} />}
-        {node.type === 'rds'             && <RdsEditForm    node={node} onChange={handleChange} />}
-        {node.type === 's3'              && <S3EditForm     node={node} onChange={handleChange} />}
-        {node.type === 'lambda'          && <LambdaEditForm node={node} onChange={handleChange} />}
-        {node.type === 'alb'             && <AlbEditForm    node={node} onChange={handleChange} showErrors={showErrors} />}
+        {node.type === 'vpc'             && <VpcEditForm        node={node} onChange={handleChange} showErrors={showErrors} />}
+        {node.type === 'ec2'             && <Ec2EditForm        node={node} onChange={handleChange} />}
+        {node.type === 'security-group'  && <SgEditForm         node={node} onChange={handleChange} />}
+        {node.type === 'rds'             && <RdsEditForm        node={node} onChange={handleChange} />}
+        {node.type === 's3'              && <S3EditForm         node={node} onChange={handleChange} />}
+        {node.type === 'lambda'          && <LambdaEditForm     node={node} onChange={handleChange} />}
+        {node.type === 'alb'             && <AlbEditForm        node={node} onChange={handleChange} showErrors={showErrors} />}
+        {node.type === 'cloudfront'      && <CloudFrontEditForm node={node} onChange={handleChange} />}
 
         <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, marginTop: 16 }}>
           <button
