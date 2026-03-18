@@ -29,6 +29,12 @@ export function buildDeleteCommands(node: CloudNode, opts: DeleteOptions = {}): 
       return [['elbv2', 'delete-load-balancer', '--load-balancer-arn', node.id]]
     case 'acm':
       return [['acm', 'delete-certificate', '--certificate-arn', node.id]]
+    case 'apigw':
+      return [['apigatewayv2', 'delete-api', '--api-id', node.id]]
+    case 'apigw-route': {
+      const meta = node.metadata as { apiId: string; routeId: string }
+      return [['apigatewayv2', 'delete-route', '--api-id', meta.apiId, '--route-id', meta.routeId]]
+    }
     default:
       return []
   }

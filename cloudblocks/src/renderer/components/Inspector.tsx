@@ -6,12 +6,14 @@ interface InspectorProps {
   onDelete: (node: CloudNode) => void
   onEdit: (node: CloudNode) => void
   onQuickAction: (node: CloudNode, action: 'stop' | 'start' | 'reboot' | 'invalidate', meta?: { path?: string }) => void
+  onAddRoute?: (apiId: string) => void
 }
 
-export function Inspector({ onDelete, onEdit, onQuickAction }: InspectorProps){
-  const selectedId = useCloudStore((s) => s.selectedNodeId)
-  const nodes      = useCloudStore((s) => s.nodes)
-  const node       = nodes.find((n) => n.id === selectedId)
+export function Inspector({ onDelete, onEdit, onQuickAction, onAddRoute }: InspectorProps){
+  const selectedId    = useCloudStore((s) => s.selectedNodeId)
+  const nodes         = useCloudStore((s) => s.nodes)
+  const setActiveCreate = useCloudStore((s) => s.setActiveCreate)
+  const node          = nodes.find((n) => n.id === selectedId)
 
   const [invalidatePath, setInvalidatePath] = useState('/*')
   const [acmDeleteError, setAcmDeleteError] = useState<string | null>(null)
@@ -182,8 +184,97 @@ export function Inspector({ onDelete, onEdit, onQuickAction }: InspectorProps){
             </div>
           )}
 
+          {/* API Gateway specific metadata */}
+          {node.type === 'apigw' && (
+            <div>
+              <div className="text-[8px] mb-1 mt-2" style={{ color: 'var(--cb-text-muted)', borderTop: '1px solid var(--cb-border-strong)', paddingTop: '6px' }}>
+                METADATA
+              </div>
+              <div className="mb-1.5">
+                <div className="text-[7px]" style={{ color: 'var(--cb-text-muted)' }}>ENDPOINT</div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                  <span className="text-[8px] break-all" style={{ color: 'var(--cb-text-secondary)', flex: 1 }}>{node.metadata.endpoint as string || '—'}</span>
+                  {node.metadata.endpoint && (
+                    <button
+                      onClick={() => navigator.clipboard.writeText(node.metadata.endpoint as string)}
+                      style={{ background: 'var(--cb-bg-elevated)', border: '1px solid var(--cb-border)', borderRadius: 2, padding: '1px 4px', color: 'var(--cb-text-muted)', fontFamily: 'monospace', fontSize: 8, cursor: 'pointer', flexShrink: 0 }}
+                    >⎘</button>
+                  )}
+                </div>
+              </div>
+              <div className="mb-1.5">
+                <div className="text-[7px]" style={{ color: 'var(--cb-text-muted)' }}>PROTOCOL</div>
+                <div className="text-[8px]" style={{ color: 'var(--cb-text-secondary)' }}>HTTP</div>
+              </div>
+              <div className="mb-1.5">
+                <div className="text-[7px]" style={{ color: 'var(--cb-text-muted)' }}>CORS ORIGINS</div>
+                <div className="text-[8px] break-all" style={{ color: 'var(--cb-text-secondary)' }}>
+                  {((node.metadata.corsOrigins as string[]) ?? []).join(', ') || '(none)'}
+                </div>
+              </div>
+              <div className="mb-1.5">
+                <div className="text-[7px]" style={{ color: 'var(--cb-text-muted)' }}>ROUTES</div>
+                <div className="text-[8px]" style={{ color: 'var(--cb-text-secondary)' }}>
+                  {nodes.filter((n) => n.type === 'apigw-route' && n.parentId === node.id).length}
+                </div>
+              </div>
+              <div style={{ display: 'flex', gap: 4, marginTop: 8 }}>
+                <button
+                  onClick={() => onEdit(node)}
+                  style={{ flex: 1, background: 'var(--cb-bg-elevated)', border: '1px solid #64b5f6', borderRadius: 2, padding: '3px 0', color: '#64b5f6', fontFamily: 'monospace', fontSize: 9, cursor: 'pointer' }}
+                >✎ Edit</button>
+                <button
+                  onClick={() => onDelete(node)}
+                  style={{ flex: 1, background: 'var(--cb-bg-elevated)', border: '1px solid #ff5f57', borderRadius: 2, padding: '3px 0', color: '#ff5f57', fontFamily: 'monospace', fontSize: 9, cursor: 'pointer' }}
+                >✕ Delete</button>
+              </div>
+              <div style={{ marginTop: 4, fontSize: 8, color: 'var(--cb-text-muted)' }}>Deletes all routes in this API.</div>
+              <button
+                onClick={() => {
+                  setActiveCreate({ resource: 'apigw-route', view: 'topology' })
+                  if (onAddRoute) onAddRoute(node.id)
+                }}
+                style={{ width: '100%', marginTop: 8, background: 'var(--cb-bg-elevated)', border: '1px solid #8b5cf6', borderRadius: 2, padding: '3px 0', color: '#8b5cf6', fontFamily: 'monospace', fontSize: 9, cursor: 'pointer' }}
+              >+ Add Route</button>
+            </div>
+          )}
+
+          {/* API Gateway Route specific metadata */}
+          {node.type === 'apigw-route' && (
+            <div>
+              <div className="text-[8px] mb-1 mt-2" style={{ color: 'var(--cb-text-muted)', borderTop: '1px solid var(--cb-border-strong)', paddingTop: '6px' }}>
+                METADATA
+              </div>
+              {[
+                { k: 'METHOD', v: node.metadata.method as string },
+                { k: 'PATH',   v: node.metadata.path   as string },
+                { k: 'API',    v: (() => { const api = nodes.find((n) => n.id === node.metadata.apiId); return api ? api.label : node.metadata.apiId as string })() },
+                { k: 'TARGET', v: (node.metadata.lambdaArn as string | undefined) ?? '(no integration)' },
+              ].map(({ k, v }) => (
+                <div key={k} className="mb-1.5">
+                  <div className="text-[7px]" style={{ color: 'var(--cb-text-muted)' }}>{k}</div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                    <span className="text-[8px] break-all" style={{ color: 'var(--cb-text-secondary)', flex: 1 }}>{v || '—'}</span>
+                    {k === 'TARGET' && node.metadata.lambdaArn && (
+                      <button
+                        onClick={() => navigator.clipboard.writeText(node.metadata.lambdaArn as string)}
+                        style={{ background: 'var(--cb-bg-elevated)', border: '1px solid var(--cb-border)', borderRadius: 2, padding: '1px 4px', color: 'var(--cb-text-muted)', fontFamily: 'monospace', fontSize: 8, cursor: 'pointer', flexShrink: 0 }}
+                      >⎘</button>
+                    )}
+                  </div>
+                </div>
+              ))}
+              <div style={{ display: 'flex', gap: 4, marginTop: 8 }}>
+                <button
+                  onClick={() => onDelete(node)}
+                  style={{ flex: 1, background: 'var(--cb-bg-elevated)', border: '1px solid #ff5f57', borderRadius: 2, padding: '3px 0', color: '#ff5f57', fontFamily: 'monospace', fontSize: 9, cursor: 'pointer' }}
+                >✕ Delete</button>
+              </div>
+            </div>
+          )}
+
           {/* Default metadata + buttons for all other node types */}
-          {node.type !== 'acm' && node.type !== 'cloudfront' && (
+          {node.type !== 'acm' && node.type !== 'cloudfront' && node.type !== 'apigw' && node.type !== 'apigw-route' && (
             <>
               {Object.entries(node.metadata).length > 0 && (
                 <div>

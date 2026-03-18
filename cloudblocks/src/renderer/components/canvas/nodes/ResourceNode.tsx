@@ -20,6 +20,10 @@ const TYPE_BORDER: Record<NodeType, string> = {
   alb:              '#FF9900',
   'security-group': '#9c27b0',
   igw:              '#4CAF50',
+  acm:              '#64b5f6',
+  cloudfront:       '#FF9900',
+  apigw:            '#8b5cf6',
+  'apigw-route':    '#22c55e',
 }
 
 const TYPE_LABEL: Record<NodeType, string> = {
@@ -32,6 +36,10 @@ const TYPE_LABEL: Record<NodeType, string> = {
   alb:              'ALB',
   'security-group': 'SG',
   igw:              'IGW',
+  acm:              'ACM',
+  cloudfront:       'CF',
+  apigw:            'APIGW',
+  'apigw-route':    'ROUTE',
 }
 
 interface ResourceNodeData {

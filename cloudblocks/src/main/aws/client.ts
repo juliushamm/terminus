@@ -5,6 +5,7 @@ import { LambdaClient } from '@aws-sdk/client-lambda'
 import { ElasticLoadBalancingV2Client } from '@aws-sdk/client-elastic-load-balancing-v2'
 import { ACMClient } from '@aws-sdk/client-acm'
 import { CloudFrontClient } from '@aws-sdk/client-cloudfront'
+import { ApiGatewayV2Client } from '@aws-sdk/client-apigatewayv2'
 
 export interface AwsClients {
   ec2: EC2Client
@@ -14,6 +15,7 @@ export interface AwsClients {
   alb: ElasticLoadBalancingV2Client
   acm: ACMClient
   cloudfront: CloudFrontClient
+  apigw: ApiGatewayV2Client
 }
 
 // Creates a fresh set of AWS SDK clients for the given profile + region.
@@ -33,5 +35,6 @@ export function createClients(profile: string, region: string): AwsClients {
     // ACM for CloudFront must always use us-east-1
     acm:        new ACMClient({ region: 'us-east-1' }),
     cloudfront: new CloudFrontClient(config),
+    apigw:      new ApiGatewayV2Client(config),
   }
 }

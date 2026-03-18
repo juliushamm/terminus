@@ -1,5 +1,5 @@
 import type { CloudNode } from '../types/cloud'
-import type { EditParams, SgRule } from '../types/edit'
+import type { EditParams, SgRule, ApigwEditParams } from '../types/edit'
 
 function ruleKey(r: SgRule): string {
   return `${r.protocol}:${r.fromPort}:${r.toPort}:${r.cidr}`
@@ -89,6 +89,14 @@ export function buildEditCommands(node: CloudNode, params: EditParams): string[]
     case 'cloudfront':
       // CloudFront edits use SDK via IPC (CF_UPDATE), not CLI
       return []
+
+    case 'apigw': {
+      const p = params as ApigwEditParams
+      const corsArgs = p.corsOrigins.length > 0
+        ? ['--cors-configuration', `AllowOrigins=${p.corsOrigins.join(',')},AllowMethods=*,AllowHeaders=*`]
+        : ['--cors-configuration', '{}']
+      return [['apigatewayv2', 'update-api', '--api-id', p.apiId, '--name', p.name, ...corsArgs]]
+    }
 
     default:
       return []

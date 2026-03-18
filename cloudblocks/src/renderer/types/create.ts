@@ -88,4 +88,17 @@ export interface CloudFrontParams {
   priceClass: 'PriceClass_All' | 'PriceClass_100' | 'PriceClass_200'
 }
 
-export type CreateParams = VpcParams | Ec2Params | SgParams | S3Params | RdsParams | LambdaParams | AlbParams | AcmParams | CloudFrontParams
+export interface ApigwParams {
+  resource: 'apigw'
+  name: string
+  corsOrigins: string[]
+}
+
+export interface ApigwRouteParams {
+  resource: 'apigw-route'
+  apiId: string
+  method: string
+  path: string
+}
+
+export type CreateParams = VpcParams | Ec2Params | SgParams | S3Params | RdsParams | LambdaParams | AlbParams | AcmParams | CloudFrontParams | ApigwParams | ApigwRouteParams

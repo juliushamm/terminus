@@ -8,18 +8,22 @@ import { SubnetNode } from './nodes/SubnetNode'
 import { GlobalZoneNode } from './nodes/GlobalZoneNode'
 import { AcmNode } from './nodes/AcmNode'
 import { CloudFrontNode } from './nodes/CloudFrontNode'
+import { ApigwNode } from './nodes/ApigwNode'
+import { ApigwRouteNode } from './nodes/ApigwRouteNode'
 import type { CloudNode } from '../../types/cloud'
 
 const NODE_TYPES = {
-  resource:   ResourceNode,
-  vpc:        VpcNode,
-  subnet:     SubnetNode,
-  globalZone: GlobalZoneNode,
-  acm:        AcmNode,
-  cloudfront: CloudFrontNode,
+  resource:    ResourceNode,
+  vpc:         VpcNode,
+  subnet:      SubnetNode,
+  globalZone:  GlobalZoneNode,
+  acm:         AcmNode,
+  cloudfront:  CloudFrontNode,
+  apigw:       ApigwNode,
+  'apigw-route': ApigwRouteNode,
 }
 
-const CONTAINER_TYPES = new Set(['vpc', 'subnet'])
+const CONTAINER_TYPES = new Set(['vpc', 'subnet', 'apigw'])
 
 const RES_W     = 150
 const RES_H     = 66
@@ -36,6 +40,13 @@ const VPC_LABEL = 32
 // Global zone constants
 const GLOBAL_PAD   = 16
 const GLOBAL_LABEL = 32
+
+// API Gateway container constants
+const APIGW_PAD       = 16
+const APIGW_HEADER    = 32
+const APIGW_ROUTE_H   = 36
+const APIGW_ROUTE_GAP = 8
+const APIGW_MIN_W     = 240
 
 function subnetSize(resourceCount: number): { w: number; h: number } {
   const cols = Math.min(resourceCount || 1, RES_COLS)
@@ -97,9 +108,11 @@ function buildFlowNodes(cloudNodes: CloudNode[], selectedId: string | null): Nod
   }
 
   // Bucket regional nodes by role
-  const vpcs    = regionalNodes.filter((n) => n.type === 'vpc')
-  const subnets = regionalNodes.filter((n) => n.type === 'subnet')
-  const resources = regionalNodes.filter((n) => !CONTAINER_TYPES.has(n.type))
+  const vpcs      = regionalNodes.filter((n) => n.type === 'vpc')
+  const subnets   = regionalNodes.filter((n) => n.type === 'subnet')
+  const apigws    = regionalNodes.filter((n) => n.type === 'apigw')
+  const apigwRoutes = regionalNodes.filter((n) => n.type === 'apigw-route')
+  const resources = regionalNodes.filter((n) => !CONTAINER_TYPES.has(n.type) && n.type !== 'apigw-route')
 
   const subnetsByVpc      = new Map<string, CloudNode[]>()
   const resourcesByParent = new Map<string, CloudNode[]>()
@@ -194,6 +207,55 @@ function buildFlowNodes(cloudNodes: CloudNode[], selectedId: string | null): Nod
     vpcX += vpcW + VPC_GAP
   })
 
+  // Place API Gateway containers — same row as VPCs, appended to the right
+  const routesByApi = new Map<string, CloudNode[]>()
+  apigwRoutes.forEach((r) => {
+    if (!r.parentId) return
+    if (!routesByApi.has(r.parentId)) routesByApi.set(r.parentId, [])
+    routesByApi.get(r.parentId)!.push(r)
+  })
+
+  apigws.forEach((api) => {
+    const routes = routesByApi.get(api.id) ?? []
+    const longestLabel = routes.reduce((max, r) => Math.max(max, r.label.length), 0)
+    const apigwW = Math.max(APIGW_MIN_W, longestLabel * 7 + APIGW_PAD * 2)
+    const apigwH = APIGW_HEADER + APIGW_PAD + routes.length * (APIGW_ROUTE_H + APIGW_ROUTE_GAP) + APIGW_PAD
+    const apigwHFinal = Math.max(80, apigwH)
+    maxVpcHeight = Math.max(maxVpcHeight, apigwHFinal)
+
+    nodes.push({
+      id:       api.id,
+      type:     'apigw',
+      position: { x: vpcX, y: vpcY },
+      style:    { width: apigwW, height: apigwHFinal },
+      data:     { label: api.label, endpoint: api.metadata.endpoint as string | undefined },
+      selected: api.id === selectedId,
+    })
+
+    routes.forEach((route, ri) => {
+      nodes.push({
+        id:       route.id,
+        type:     'apigw-route',
+        parentId: api.id,
+        extent:   'parent',
+        position: {
+          x: APIGW_PAD,
+          y: APIGW_HEADER + APIGW_PAD + ri * (APIGW_ROUTE_H + APIGW_ROUTE_GAP),
+        },
+        style:    { width: apigwW - APIGW_PAD * 2 },
+        data: {
+          label:     route.label,
+          method:    route.metadata.method as string | undefined,
+          path:      route.metadata.path as string | undefined,
+          hasLambda: !!(route.metadata.lambdaArn),
+        },
+        selected: route.id === selectedId,
+      })
+    })
+
+    vpcX += apigwW + VPC_GAP
+  })
+
   // Root resources (no parent) — row below all VPCs
   const ROOT_COLS  = 5
   const rootY      = vpcY + maxVpcHeight + 60
@@ -210,12 +272,14 @@ function buildFlowNodes(cloudNodes: CloudNode[], selectedId: string | null): Nod
   return nodes
 }
 
-// Build CloudFront → origin edges for topology view
+// Build topology edges: CloudFront → origin, route → lambda
 function buildTopologyEdges(cloudNodes: CloudNode[]): Edge[] {
   const edges: Edge[] = []
-  const s3Nodes  = cloudNodes.filter((n) => n.type === 's3')
-  const albNodes = cloudNodes.filter((n) => n.type === 'alb')
-  const cfNodes  = cloudNodes.filter((n) => n.type === 'cloudfront')
+  const s3Nodes     = cloudNodes.filter((n) => n.type === 's3')
+  const albNodes    = cloudNodes.filter((n) => n.type === 'alb')
+  const cfNodes     = cloudNodes.filter((n) => n.type === 'cloudfront')
+  const lambdaNodes = cloudNodes.filter((n) => n.type === 'lambda')
+  const routeNodes  = cloudNodes.filter((n) => n.type === 'apigw-route')
 
   cfNodes.forEach((cf) => {
     const origins = (cf.metadata.origins ?? []) as Array<{ id: string; domainName: string; type: string }>
@@ -243,6 +307,22 @@ function buildTopologyEdges(cloudNodes: CloudNode[]): Edge[] {
           style:  { stroke: 'var(--cb-border-strong)', strokeWidth: 1.5 },
         })
       }
+    })
+  })
+
+  // Route → Lambda integration edges (dotted)
+  routeNodes.forEach((route) => {
+    const lambdaArn = route.metadata.lambdaArn as string | undefined
+    if (!lambdaArn) return
+    const lambdaNode = lambdaNodes.find((n) => n.id === lambdaArn || n.metadata.arn === lambdaArn)
+    if (!lambdaNode) return
+    edges.push({
+      id:     `route-lambda-${route.id}`,
+      source: route.id,
+      target: lambdaNode.id,
+      type:   'step',
+      label:  'integration',
+      style:  { stroke: 'var(--cb-border)', strokeDasharray: '4 2', strokeWidth: 1 },
     })
   })
 

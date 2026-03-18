@@ -5,9 +5,17 @@ import { useCloudStore } from '../../store/cloud'
 import { ResourceNode } from './nodes/ResourceNode'
 import { AcmNode } from './nodes/AcmNode'
 import { CloudFrontNode } from './nodes/CloudFrontNode'
+import { ApigwNode } from './nodes/ApigwNode'
+import { ApigwRouteNode } from './nodes/ApigwRouteNode'
 import type { CloudNode } from '../../types/cloud'
 
-const NODE_TYPES = { resource: ResourceNode, acm: AcmNode, cloudfront: CloudFrontNode }
+const NODE_TYPES = {
+  resource:      ResourceNode,
+  acm:           AcmNode,
+  cloudfront:    CloudFrontNode,
+  apigw:         ApigwNode,
+  'apigw-route': ApigwRouteNode,
+}
 
 // Distinct colors per VPC — cycles if more than 6 VPCs
 const VPC_PALETTE = ['#1976D2', '#9c27b0', '#0891b2', '#16a34a', '#ea580c', '#e11d48']
@@ -26,9 +34,9 @@ function findVpcAncestor(node: CloudNode, byId: Map<string, CloudNode>): CloudNo
 function deriveEdges(nodes: CloudNode[]): Edge[] {
   const edges: Edge[] = []
 
-  // Parent → child edges
+  // Parent → child edges (skip apigw-route — handled separately below)
   nodes
-    .filter((n) => n.parentId)
+    .filter((n) => n.parentId && n.type !== 'apigw-route')
     .forEach((n) => {
       edges.push({
         id:     `${n.parentId}-${n.id}`,
@@ -40,10 +48,11 @@ function deriveEdges(nodes: CloudNode[]): Edge[] {
     })
 
   // CloudFront → origin edges + CloudFront → ACM cert edges
-  const s3Nodes  = nodes.filter((n) => n.type === 's3')
-  const albNodes = nodes.filter((n) => n.type === 'alb')
-  const acmNodes = nodes.filter((n) => n.type === 'acm')
-  const cfNodes  = nodes.filter((n) => n.type === 'cloudfront')
+  const s3Nodes     = nodes.filter((n) => n.type === 's3')
+  const albNodes    = nodes.filter((n) => n.type === 'alb')
+  const acmNodes    = nodes.filter((n) => n.type === 'acm')
+  const cfNodes     = nodes.filter((n) => n.type === 'cloudfront')
+  const lambdaNodes = nodes.filter((n) => n.type === 'lambda')
 
   cfNodes.forEach((cf) => {
     const origins = (cf.metadata.origins ?? []) as Array<{ id: string; domainName: string; type: string }>
@@ -90,6 +99,36 @@ function deriveEdges(nodes: CloudNode[]): Edge[] {
     }
   })
 
+  // API Gateway route edges
+  nodes.filter((n) => n.type === 'apigw-route').forEach((route) => {
+    // route → parent apigw
+    if (route.parentId) {
+      edges.push({
+        id:     `apigw-route-${route.id}`,
+        source: route.parentId,
+        target: route.id,
+        type:   'step',
+        style:  { stroke: 'var(--cb-border)', strokeWidth: 1 },
+      })
+    }
+
+    // route → lambda integration (dotted)
+    const lambdaArn = route.metadata.lambdaArn as string | undefined
+    if (lambdaArn) {
+      const lambdaNode = lambdaNodes.find((n) => n.id === lambdaArn || n.metadata.arn === lambdaArn)
+      if (lambdaNode) {
+        edges.push({
+          id:     `route-lambda-${route.id}`,
+          source: route.id,
+          target: lambdaNode.id,
+          type:   'step',
+          label:  'integration',
+          style:  { stroke: 'var(--cb-border)', strokeDasharray: '4 2', strokeWidth: 1 },
+        })
+      }
+    }
+  })
+
   return edges
 }
 
@@ -125,19 +164,30 @@ export function GraphView({ onNodeContextMenu }: GraphViewProps){
       const vpcColor = vpc ? (vpcColorMap.get(vpc.id) ?? undefined) : undefined
       const vpcLabel = vpc ? vpc.label : undefined
 
-      // Use dedicated node types for ACM + CloudFront
-      const rfType = n.type === 'acm' ? 'acm' : n.type === 'cloudfront' ? 'cloudfront' : 'resource'
+      // Use dedicated node types for ACM, CloudFront, and API Gateway
+      const rfType =
+        n.type === 'acm'          ? 'acm' :
+        n.type === 'cloudfront'   ? 'cloudfront' :
+        n.type === 'apigw'        ? 'apigw' :
+        n.type === 'apigw-route'  ? 'apigw-route' :
+        'resource'
 
       return {
         id:       n.id,
         type:     rfType,
         position: { x: (i % 5) * 175 + 40, y: Math.floor(i / 5) * 110 + 60 },
         data:     {
-          label:    n.label,
-          nodeType: n.type,
-          status:   n.status,
-          vpcLabel: n.type !== 'vpc' && n.type !== 'subnet' ? vpcLabel : undefined,
-          vpcColor: n.type !== 'vpc' && n.type !== 'subnet' ? vpcColor : undefined,
+          label:     n.label,
+          nodeType:  n.type,
+          status:    n.status,
+          vpcLabel:  n.type !== 'vpc' && n.type !== 'subnet' ? vpcLabel : undefined,
+          vpcColor:  n.type !== 'vpc' && n.type !== 'subnet' ? vpcColor : undefined,
+          // API Gateway route extra fields
+          method:    n.type === 'apigw-route' ? n.metadata.method as string | undefined : undefined,
+          path:      n.type === 'apigw-route' ? n.metadata.path   as string | undefined : undefined,
+          hasLambda: n.type === 'apigw-route' ? !!(n.metadata.lambdaArn) : undefined,
+          // API Gateway container extra fields
+          endpoint:  n.type === 'apigw' ? n.metadata.endpoint as string | undefined : undefined,
         },
         selected: n.id === selectedId,
       }

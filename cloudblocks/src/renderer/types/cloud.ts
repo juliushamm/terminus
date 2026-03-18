@@ -12,6 +12,8 @@ export type NodeType =
   | 'igw'
   | 'acm'
   | 'cloudfront'
+  | 'apigw'
+  | 'apigw-route'
 
 export interface CloudNode {
   id: string

@@ -21,6 +21,13 @@ export interface CloudFrontEditParams {
   priceClass?: 'PriceClass_All' | 'PriceClass_100' | 'PriceClass_200'
 }
 
+export interface ApigwEditParams {
+  resource: 'apigw'
+  apiId: string
+  name: string
+  corsOrigins: string[]
+}
+
 export type EditParams =
   | VpcEditParams | Ec2EditParams | SgEditParams | RdsEditParams
-  | S3EditParams  | LambdaEditParams | AlbEditParams | CloudFrontEditParams
+  | S3EditParams  | LambdaEditParams | AlbEditParams | CloudFrontEditParams | ApigwEditParams

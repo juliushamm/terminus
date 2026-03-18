@@ -12,46 +12,54 @@ import { LambdaForm } from './LambdaForm'
 import { AlbForm } from './AlbForm'
 import { AcmForm } from './AcmForm'
 import { CloudFrontForm } from './CloudFrontForm'
+import { ApigwForm } from './ApigwForm'
+import { ApigwRouteForm } from './ApigwRouteForm'
 
 function validateParams(params: CreateParams | null): boolean {
   if (!params) return false
   switch (params.resource) {
-    case 'vpc':        return !!(params.name && params.cidr)
-    case 'ec2':        return !!(params.name && params.amiId && params.instanceType)
-    case 'sg':         return !!(params.name && params.description && params.vpcId)
-    case 's3':         return !!(params.bucketName)
-    case 'rds':        return !!(params.identifier && params.masterUsername && params.masterPassword)
-    case 'lambda':     return !!(params.name && params.roleArn && params.handler)
-    case 'alb':        return !!(params.name && params.subnetIds.length >= 2 && params.securityGroupIds.length >= 1)
-    case 'acm':        return !!(params.domainName)
-    case 'cloudfront': return !!(params.comment && params.origins.length > 0)
-    default:           return true
+    case 'vpc':          return !!(params.name && params.cidr)
+    case 'ec2':          return !!(params.name && params.amiId && params.instanceType)
+    case 'sg':           return !!(params.name && params.description && params.vpcId)
+    case 's3':           return !!(params.bucketName)
+    case 'rds':          return !!(params.identifier && params.masterUsername && params.masterPassword)
+    case 'lambda':       return !!(params.name && params.roleArn && params.handler)
+    case 'alb':          return !!(params.name && params.subnetIds.length >= 2 && params.securityGroupIds.length >= 1)
+    case 'acm':          return !!(params.domainName)
+    case 'cloudfront':   return !!(params.comment && params.origins.length > 0)
+    case 'apigw':        return !!(params.name)
+    case 'apigw-route':  return !!(params.apiId && params.path && params.path.startsWith('/'))
+    default:             return true
   }
 }
 
 const TITLES: Record<string, string> = {
-  vpc:        'New VPC',
-  ec2:        'New EC2 Instance',
-  sg:         'New Security Group',
-  s3:         'New S3 Bucket',
-  rds:        'New RDS Instance',
-  lambda:     'New Lambda Function',
-  alb:        'New ALB',
-  acm:        'New ACM Certificate',
-  cloudfront: 'New CloudFront Distribution',
+  vpc:          'New VPC',
+  ec2:          'New EC2 Instance',
+  sg:           'New Security Group',
+  s3:           'New S3 Bucket',
+  rds:          'New RDS Instance',
+  lambda:       'New Lambda Function',
+  alb:          'New ALB',
+  acm:          'New ACM Certificate',
+  cloudfront:   'New CloudFront Distribution',
+  apigw:        'New API Gateway',
+  'apigw-route': 'New API Route',
 }
 
 // Maps form resource identifier to CloudNode NodeType
 const RESOURCE_TO_NODE_TYPE: Record<string, NodeType> = {
-  vpc:        'vpc',
-  ec2:        'ec2',
-  sg:         'security-group',
-  s3:         's3',
-  rds:        'rds',
-  lambda:     'lambda',
-  alb:        'alb',
-  acm:        'acm',
-  cloudfront: 'cloudfront',
+  vpc:           'vpc',
+  ec2:           'ec2',
+  sg:            'security-group',
+  s3:            's3',
+  rds:           'rds',
+  lambda:        'lambda',
+  alb:           'alb',
+  acm:           'acm',
+  cloudfront:    'cloudfront',
+  apigw:         'apigw',
+  'apigw-route': 'apigw-route',
 }
 
 export function CreateModal(){
@@ -62,6 +70,14 @@ export function CreateModal(){
   const clearCliOutput    = useCloudStore((s) => s.clearCliOutput)
   const addPendingNode    = useCloudStore((s) => s.addPendingNode)
   const removePendingNode = useCloudStore((s) => s.removePendingNode)
+  const selectedNodeId    = useCloudStore((s) => s.selectedNodeId)
+  const nodes             = useCloudStore((s) => s.nodes)
+
+  // When creating a route, the parent API is the currently selected node (if it's an apigw)
+  const selectedNode = nodes.find((n) => n.id === selectedNodeId)
+  const parentApiId  = (activeCreate?.resource === 'apigw-route' && selectedNode?.type === 'apigw')
+    ? selectedNode.id
+    : (activeCreate as { resource: string; view: string; parentId?: string } | null)?.parentId ?? ''
 
   const [showErrors, setShowErrors] = useState(false)
 
@@ -168,8 +184,10 @@ export function CreateModal(){
         {activeCreate.resource === 'rds'        && <RdsForm        onChange={handleChange} showErrors={showErrors} />}
         {activeCreate.resource === 'lambda'     && <LambdaForm     onChange={handleChange} showErrors={showErrors} />}
         {activeCreate.resource === 'alb'        && <AlbForm        onChange={handleChange} showErrors={showErrors} />}
-        {activeCreate.resource === 'acm'        && <AcmForm        onChange={handleChange} showErrors={showErrors} />}
-        {activeCreate.resource === 'cloudfront' && <CloudFrontForm onChange={handleChange} showErrors={showErrors} />}
+        {activeCreate.resource === 'acm'          && <AcmForm          onChange={handleChange} showErrors={showErrors} />}
+        {activeCreate.resource === 'cloudfront'   && <CloudFrontForm   onChange={handleChange} showErrors={showErrors} />}
+        {activeCreate.resource === 'apigw'        && <ApigwForm        onChange={handleChange} showErrors={showErrors} />}
+        {activeCreate.resource === 'apigw-route'  && <ApigwRouteForm   onChange={handleChange} showErrors={showErrors} apiId={parentApiId} />}
 
         <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '16px', paddingTop: '10px', borderTop: '1px solid var(--cb-border-strong)' }}>
           <button

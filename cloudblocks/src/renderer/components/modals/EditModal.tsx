@@ -11,6 +11,7 @@ import S3EditForm from './S3EditForm'
 import LambdaEditForm from './LambdaEditForm'
 import AlbEditForm from './AlbEditForm'
 import CloudFrontEditForm from './CloudFrontEditForm'
+import ApigwEditForm from './ApigwEditForm'
 
 interface EditModalProps {
   node: CloudNode | null
@@ -20,7 +21,7 @@ interface EditModalProps {
 const RESOURCE_LABELS: Record<string, string> = {
   vpc: 'VPC', ec2: 'EC2 Instance', 'security-group': 'Security Group',
   rds: 'RDS Instance', s3: 'S3 Bucket', lambda: 'Lambda Function', alb: 'Load Balancer',
-  cloudfront: 'CloudFront Distribution',
+  cloudfront: 'CloudFront Distribution', apigw: 'API Gateway',
 }
 
 export default function EditModal({ node, onClose }: EditModalProps) {
@@ -110,6 +111,7 @@ export default function EditModal({ node, onClose }: EditModalProps) {
         {node.type === 'lambda'          && <LambdaEditForm     node={node} onChange={handleChange} />}
         {node.type === 'alb'             && <AlbEditForm        node={node} onChange={handleChange} showErrors={showErrors} />}
         {node.type === 'cloudfront'      && <CloudFrontEditForm node={node} onChange={handleChange} />}
+        {node.type === 'apigw'           && <ApigwEditForm      node={node} onChange={handleChange} />}
 
         <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, marginTop: 16 }}>
           <button

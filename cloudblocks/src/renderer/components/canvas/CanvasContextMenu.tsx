@@ -17,6 +17,7 @@ const CREATABLE = [
   { resource: 'alb',        label: 'New ALB' },
   { resource: 'acm',        label: 'New ACM Certificate' },
   { resource: 'cloudfront', label: 'New CloudFront Distribution' },
+  { resource: 'apigw',      label: 'New API Gateway' },
 ] as const
 
 export function CanvasContextMenu({ x, y, onClose }: Props){

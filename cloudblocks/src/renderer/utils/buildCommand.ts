@@ -1,4 +1,4 @@
-import type { CreateParams, SgParams, S3Params, RdsParams, LambdaParams, AlbParams, AcmParams } from '../types/create'
+import type { CreateParams, SgParams, S3Params, RdsParams, LambdaParams, AlbParams, AcmParams, ApigwParams, ApigwRouteParams } from '../types/create'
 
 /**
  * Returns an array of argv arrays — one per aws CLI command.
@@ -44,6 +44,8 @@ export function buildCommands(params: CreateParams): string[][] {
     case 'alb':        return buildAlbCommands(params as AlbParams)
     case 'acm':        return buildAcmCommands(params as AcmParams)
     case 'cloudfront': return []   // CloudFront create uses SDK via IPC, not CLI
+    case 'apigw':      return buildApigwCommands(params as ApigwParams)
+    case 'apigw-route': return buildApigwRouteCommands(params as ApigwRouteParams)
   }
 }
 
@@ -109,6 +111,26 @@ function buildSgCommands(params: SgParams): string[][] {
   ])
 
   return [create, ...authorizes]
+}
+
+function buildApigwCommands(p: ApigwParams): string[][] {
+  const args = [
+    'apigatewayv2', 'create-api',
+    '--name', p.name,
+    '--protocol-type', 'HTTP',
+  ]
+  if (p.corsOrigins.length > 0) {
+    args.push('--cors-configuration', `AllowOrigins=${p.corsOrigins.join(',')},AllowMethods=*,AllowHeaders=*`)
+  }
+  return [args]
+}
+
+function buildApigwRouteCommands(p: ApigwRouteParams): string[][] {
+  return [[
+    'apigatewayv2', 'create-route',
+    '--api-id', p.apiId,
+    '--route-key', `${p.method} ${p.path}`,
+  ]]
 }
 
 function buildAcmCommands(p: AcmParams): string[][] {
