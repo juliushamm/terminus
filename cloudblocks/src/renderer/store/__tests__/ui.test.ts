@@ -77,4 +77,11 @@ describe('loadView', () => {
     useUIStore.getState().loadView(0, 'topology', fitViewFn)
     expect(fitViewFn).toHaveBeenCalledOnce()
   })
+
+  it('is a no-op when the slot is empty', () => {
+    const fitViewFn = vi.fn()
+    useUIStore.getState().loadView(0, 'topology', fitViewFn)
+    expect(fitViewFn).not.toHaveBeenCalled()
+    expect(useUIStore.getState().activeViewSlot).toBeNull()
+  })
 })
