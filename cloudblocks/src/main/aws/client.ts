@@ -12,6 +12,9 @@ import { ECRClient } from '@aws-sdk/client-ecr'
 import { SNSClient } from '@aws-sdk/client-sns'
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
 import { SSMClient } from '@aws-sdk/client-ssm'
+import { Route53Client } from '@aws-sdk/client-route-53'
+import { SFNClient } from '@aws-sdk/client-sfn'
+import { EventBridgeClient } from '@aws-sdk/client-eventbridge'
 
 export interface AwsClients {
   ec2: EC2Client
@@ -28,6 +31,9 @@ export interface AwsClients {
   sns: SNSClient
   dynamo: DynamoDBClient
   ssm: SSMClient
+  r53: Route53Client
+  sfn: SFNClient
+  eventbridge: EventBridgeClient
 }
 
 // Creates a fresh set of AWS SDK clients for the given profile + region.
@@ -54,5 +60,8 @@ export function createClients(profile: string, region: string): AwsClients {
     sns:        new SNSClient(config),
     dynamo:     new DynamoDBClient(config),
     ssm:        new SSMClient(config),
+    r53:        new Route53Client({ region: 'us-east-1' }),
+    sfn:        new SFNClient(config),
+    eventbridge: new EventBridgeClient(config),
   }
 }

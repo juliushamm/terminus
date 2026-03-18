@@ -17,6 +17,9 @@ import { listTopics } from './services/sns'
 import { listTables } from './services/dynamo'
 import { listParameters } from './services/ssm'
 import { listNatGateways } from './services/nat'
+import { listHostedZones } from './services/r53'
+import { listStateMachines } from './services/sfn'
+import { listEventBuses } from './services/eventbridge'
 
 /**
  * Contract every cloud provider plugin must satisfy.
@@ -54,6 +57,9 @@ export const awsProvider: CloudProvider = {
       listTables(clients.dynamo, region).catch(() => [] as CloudNode[]),
       listParameters(clients.ssm, region).catch(() => [] as CloudNode[]),
       listNatGateways(clients.ec2, region).catch(() => [] as CloudNode[]),
+      listHostedZones(clients.r53).catch(() => [] as CloudNode[]),
+      listStateMachines(clients.sfn, region).catch(() => [] as CloudNode[]),
+      listEventBuses(clients.eventbridge, region).catch(() => [] as CloudNode[]),
     ])
     return results.flat()
   },

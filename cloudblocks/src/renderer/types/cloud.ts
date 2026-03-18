@@ -21,6 +21,9 @@ export type NodeType =
   | 'dynamo'
   | 'ssm-param'
   | 'nat-gateway'
+  | 'r53-zone'
+  | 'sfn'
+  | 'eventbridge-bus'
 
 export interface CloudNode {
   id: string

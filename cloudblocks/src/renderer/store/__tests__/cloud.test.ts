@@ -153,6 +153,21 @@ describe('NodeType union', () => {
     const t: NodeType = 'nat-gateway'
     expect(t).toBeTruthy()
   })
+
+  it('NodeType includes r53-zone', () => {
+    const t: NodeType = 'r53-zone'
+    expect(t).toBeTruthy()
+  })
+
+  it('NodeType includes sfn', () => {
+    const t: NodeType = 'sfn'
+    expect(t).toBeTruthy()
+  })
+
+  it('NodeType includes eventbridge-bus', () => {
+    const t: NodeType = 'eventbridge-bus'
+    expect(t).toBeTruthy()
+  })
 })
 
 describe('theme defaults', () => {
