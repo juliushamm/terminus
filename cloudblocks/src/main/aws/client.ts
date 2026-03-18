@@ -9,6 +9,9 @@ import { ApiGatewayV2Client } from '@aws-sdk/client-apigatewayv2'
 import { SQSClient } from '@aws-sdk/client-sqs'
 import { SecretsManagerClient } from '@aws-sdk/client-secrets-manager'
 import { ECRClient } from '@aws-sdk/client-ecr'
+import { SNSClient } from '@aws-sdk/client-sns'
+import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
+import { SSMClient } from '@aws-sdk/client-ssm'
 
 export interface AwsClients {
   ec2: EC2Client
@@ -22,6 +25,9 @@ export interface AwsClients {
   sqs: SQSClient
   secrets: SecretsManagerClient
   ecr: ECRClient
+  sns: SNSClient
+  dynamo: DynamoDBClient
+  ssm: SSMClient
 }
 
 // Creates a fresh set of AWS SDK clients for the given profile + region.
@@ -45,5 +51,8 @@ export function createClients(profile: string, region: string): AwsClients {
     sqs:        new SQSClient(config),
     secrets:    new SecretsManagerClient(config),
     ecr:        new ECRClient(config),
+    sns:        new SNSClient(config),
+    dynamo:     new DynamoDBClient(config),
+    ssm:        new SSMClient(config),
   }
 }

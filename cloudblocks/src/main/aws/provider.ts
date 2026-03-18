@@ -13,6 +13,10 @@ import { listInternetGateways } from './services/igw'
 import { listQueues } from './services/sqs'
 import { listSecrets } from './services/secrets'
 import { listRepositories } from './services/ecr'
+import { listTopics } from './services/sns'
+import { listTables } from './services/dynamo'
+import { listParameters } from './services/ssm'
+import { listNatGateways } from './services/nat'
 
 /**
  * Contract every cloud provider plugin must satisfy.
@@ -46,6 +50,10 @@ export const awsProvider: CloudProvider = {
       listQueues(clients.sqs, region).catch(() => [] as CloudNode[]),
       listSecrets(clients.secrets, region).catch(() => [] as CloudNode[]),
       listRepositories(clients.ecr, region).catch(() => [] as CloudNode[]),
+      listTopics(clients.sns, region).catch(() => [] as CloudNode[]),
+      listTables(clients.dynamo, region).catch(() => [] as CloudNode[]),
+      listParameters(clients.ssm, region).catch(() => [] as CloudNode[]),
+      listNatGateways(clients.ec2, region).catch(() => [] as CloudNode[]),
     ])
     return results.flat()
   },

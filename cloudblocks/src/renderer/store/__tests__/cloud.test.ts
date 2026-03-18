@@ -133,6 +133,26 @@ describe('NodeType union', () => {
     const t: NodeType = 'ecr-repo'
     expect(t).toBeTruthy()
   })
+
+  it('NodeType includes sns', () => {
+    const t: NodeType = 'sns'
+    expect(t).toBeTruthy()
+  })
+
+  it('NodeType includes dynamo', () => {
+    const t: NodeType = 'dynamo'
+    expect(t).toBeTruthy()
+  })
+
+  it('NodeType includes ssm-param', () => {
+    const t: NodeType = 'ssm-param'
+    expect(t).toBeTruthy()
+  })
+
+  it('NodeType includes nat-gateway', () => {
+    const t: NodeType = 'nat-gateway'
+    expect(t).toBeTruthy()
+  })
 })
 
 describe('theme defaults', () => {

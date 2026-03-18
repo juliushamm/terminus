@@ -17,6 +17,10 @@ export type NodeType =
   | 'sqs'
   | 'secret'
   | 'ecr-repo'
+  | 'sns'
+  | 'dynamo'
+  | 'ssm-param'
+  | 'nat-gateway'
 
 export interface CloudNode {
   id: string
