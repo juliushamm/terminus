@@ -3,7 +3,7 @@ import type { CloudNode } from '../../../renderer/types/cloud'
 import { scanFlatService } from './scanFlatService'
 
 export async function listQueues(client: SQSClient, region: string): Promise<CloudNode[]> {
-  return scanFlatService<SQSClient, string>(client, region, {
+  return scanFlatService(client, region, {
     fetch: async (c) => {
       const res = await c.send(new ListQueuesCommand({}))
       return res.QueueUrls ?? []
