@@ -64,6 +64,7 @@ export function ResourceNode({ data, selected }: NodeProps) {
   return (
     <div
       data-selected={selected}
+      data-status={d.status}
       className={`relative rounded${d.status === 'creating' ? ' animate-pulse' : ''}`}
       style={{
         background:  'var(--cb-bg-panel)',
