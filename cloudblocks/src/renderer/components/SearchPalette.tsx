@@ -16,6 +16,16 @@ const TYPE_BADGE_COLOR: Record<NodeType, string> = {
   cloudfront:       '#a78bfa',
   apigw:            '#8b5cf6',
   'apigw-route':    '#22c55e',
+  sqs:              '#FF9900',
+  secret:           '#22c55e',
+  'ecr-repo':       '#FF9900',
+  sns:              '#FF9900',
+  dynamo:           '#64b5f6',
+  'ssm-param':      '#22c55e',
+  'nat-gateway':    '#4CAF50',
+  'r53-zone':       '#FF9900',
+  sfn:              '#FF9900',
+  'eventbridge-bus': '#FF9900',
 }
 
 const TYPE_SHORT: Record<NodeType, string> = {
@@ -32,6 +42,16 @@ const TYPE_SHORT: Record<NodeType, string> = {
   cloudfront:       'CF',
   apigw:            'APIGW',
   'apigw-route':    'ROUTE',
+  sqs:              'SQS',
+  secret:           'SECRET',
+  'ecr-repo':       'ECR',
+  sns:              'SNS',
+  dynamo:           'DDB',
+  'ssm-param':      'SSM',
+  'nat-gateway':    'NAT',
+  'r53-zone':       'R53',
+  sfn:              'SFN',
+  'eventbridge-bus': 'EB',
 }
 
 interface Props {
@@ -40,7 +60,7 @@ interface Props {
   onSelect: (nodeId: string) => void
 }
 
-export function SearchPalette({ open, onClose, onSelect }: Props): JSX.Element | null {
+export function SearchPalette({ open, onClose, onSelect }: Props): React.JSX.Element | null {
   const nodes = useCloudStore((s) => s.nodes)
   const [query, setQuery] = useState('')
   const [cursor, setCursor] = useState(0)

@@ -23,6 +23,11 @@ beforeEach(() => {
     getSettings:   vi.fn().mockResolvedValue({ deleteConfirmStyle: 'type-to-confirm', scanInterval: 30 }),
     setSettings:   vi.fn().mockResolvedValue(undefined),
     getThemeOverrides: vi.fn().mockResolvedValue({}),
+    createCloudFront:     vi.fn().mockResolvedValue({ code: 0 }),
+    updateCloudFront:     vi.fn().mockResolvedValue({ code: 0 }),
+    deleteCloudFront:     vi.fn().mockResolvedValue({ code: 0 }),
+    invalidateCloudFront: vi.fn().mockResolvedValue({ code: 0 }),
+    deleteAcm:            vi.fn().mockResolvedValue({ code: 0 }),
   }
   useCloudStore.setState({ nodes: [], scanStatus: 'idle', profile: 'default', region: 'us-east-1' })
 })

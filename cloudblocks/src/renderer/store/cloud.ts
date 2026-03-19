@@ -1,4 +1,5 @@
 import { create, createStore } from 'zustand'
+import type { StoreApi } from 'zustand'
 import type { CloudNode, NodeStatus, ScanDelta, Settings } from '../types/cloud'
 import { applyTheme } from '../utils/applyTheme'
 
@@ -95,7 +96,7 @@ export const useCloudStore = create<CloudState>((set) => ({
 }))
 
 // test-only factory — allows isolated store instances in unit tests
-export function createCloudStore(): ReturnType<typeof createStore<CloudState>> {
+export function createCloudStore(): StoreApi<CloudState> {
   return createStore<CloudState>((set) => ({
     nodes:          [],
     scanStatus:     'idle',

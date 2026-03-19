@@ -28,6 +28,16 @@ const TYPE_BORDER: Record<NodeType, string> = {
   cloudfront:       '#FF9900',
   apigw:            '#8b5cf6',
   'apigw-route':    '#22c55e',
+  sqs:              '#FF9900',
+  secret:           '#22c55e',
+  'ecr-repo':       '#FF9900',
+  sns:              '#FF9900',
+  dynamo:           '#64b5f6',
+  'ssm-param':      '#22c55e',
+  'nat-gateway':    '#4CAF50',
+  'r53-zone':       '#FF9900',
+  sfn:              '#FF9900',
+  'eventbridge-bus': '#FF9900',
 }
 
 const TYPE_LABEL: Record<NodeType, string> = {
@@ -44,6 +54,16 @@ const TYPE_LABEL: Record<NodeType, string> = {
   cloudfront:       'CF',
   apigw:            'APIGW',
   'apigw-route':    'ROUTE',
+  sqs:              'SQS',
+  secret:           'SECRET',
+  'ecr-repo':       'ECR',
+  sns:              'SNS',
+  dynamo:           'DDB',
+  'ssm-param':      'SSM',
+  'nat-gateway':    'NAT',
+  'r53-zone':       'R53',
+  sfn:              'SFN',
+  'eventbridge-bus': 'EB',
 }
 
 interface ResourceNodeData {
@@ -55,7 +75,7 @@ interface ResourceNodeData {
   dimmed?:    boolean  // focus mode — node is not in the highlighted subgraph
 }
 
-export function ResourceNode({ data, selected }: NodeProps): JSX.Element {
+export function ResourceNode({ data, selected }: NodeProps): React.JSX.Element {
   const d = data as unknown as ResourceNodeData
   const borderColor = TYPE_BORDER[d.nodeType] ?? '#555'
   const stripeColor = statusStripeColor(d.status)

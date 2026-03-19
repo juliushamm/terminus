@@ -11,7 +11,7 @@ interface InspectorProps {
   onAddRoute?: (apiId: string) => void
 }
 
-export function Inspector({ onDelete, onEdit, onQuickAction, onAddRoute }: InspectorProps): JSX.Element {
+export function Inspector({ onDelete, onEdit, onQuickAction, onAddRoute }: InspectorProps): React.JSX.Element {
   const selectedId      = useUIStore((s) => s.selectedNodeId)
   const setActiveCreate = useUIStore((s) => s.setActiveCreate)
   const nodes           = useCloudStore((s) => s.nodes)
@@ -196,7 +196,7 @@ export function Inspector({ onDelete, onEdit, onQuickAction, onAddRoute }: Inspe
                 <div className="text-[7px]" style={{ color: 'var(--cb-text-muted)' }}>ENDPOINT</div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
                   <span className="text-[8px] break-all" style={{ color: 'var(--cb-text-secondary)', flex: 1 }}>{node.metadata.endpoint as string || '—'}</span>
-                  {node.metadata.endpoint && (
+                  {!!node.metadata.endpoint && (
                     <button
                       onClick={() => navigator.clipboard.writeText(node.metadata.endpoint as string)}
                       style={{ background: 'var(--cb-bg-elevated)', border: '1px solid var(--cb-border)', borderRadius: 2, padding: '1px 4px', color: 'var(--cb-text-muted)', fontFamily: 'monospace', fontSize: 8, cursor: 'pointer', flexShrink: 0 }}
@@ -257,7 +257,7 @@ export function Inspector({ onDelete, onEdit, onQuickAction, onAddRoute }: Inspe
                   <div className="text-[7px]" style={{ color: 'var(--cb-text-muted)' }}>{k}</div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
                     <span className="text-[8px] break-all" style={{ color: 'var(--cb-text-secondary)', flex: 1 }}>{v || '—'}</span>
-                    {k === 'TARGET' && node.metadata.lambdaArn && (
+                    {k === 'TARGET' && !!node.metadata.lambdaArn && (
                       <button
                         onClick={() => navigator.clipboard.writeText(node.metadata.lambdaArn as string)}
                         style={{ background: 'var(--cb-bg-elevated)', border: '1px solid var(--cb-border)', borderRadius: 2, padding: '1px 4px', color: 'var(--cb-text-muted)', fontFamily: 'monospace', fontSize: 8, cursor: 'pointer', flexShrink: 0 }}
