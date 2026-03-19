@@ -16,19 +16,19 @@ const inp = (err: boolean): React.CSSProperties => ({
 const lbl: React.CSSProperties = { fontSize: 9, color: 'var(--cb-text-muted)', textTransform: 'uppercase', marginBottom: 2, marginTop: 8 }
 const btnSm: React.CSSProperties = { background: 'var(--cb-bg-elevated)', border: '1px solid var(--cb-border)', borderRadius: 2, padding: '2px 6px', color: 'var(--cb-text-muted)', fontFamily: 'monospace', fontSize: 9, cursor: 'pointer' }
 
-export default function ApigwEditForm({ node, onChange, showErrors }: Props) {
+export default function ApigwEditForm({ node, onChange, showErrors }: Props): JSX.Element {
   const initialCors = (node.metadata.corsOrigins as string[]) ?? []
   const [name, setName] = useState(node.label)
   const [corsInputs, setCorsInputs] = useState<string[]>(initialCors.length > 0 ? initialCors : [''])
 
   const err = showErrors ?? false
 
-  const emit = (nextName: string, nextCors: string[]) => {
+  const emit = (nextName: string, nextCors: string[]): void => {
     const corsOrigins = nextCors.filter((s) => s.trim() !== '')
     onChange({ resource: 'apigw', apiId: node.id, name: nextName, corsOrigins })
   }
 
-  const updateCors = (newInputs: string[]) => {
+  const updateCors = (newInputs: string[]): void => {
     setCorsInputs(newInputs)
     emit(name, newInputs)
   }

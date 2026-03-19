@@ -8,7 +8,7 @@ const inp = (err: boolean): React.CSSProperties => ({ width: '100%', background:
 const sel = inp
 const lbl: React.CSSProperties = { fontSize: 9, color: 'var(--cb-text-muted)', textTransform: 'uppercase', marginBottom: 2, marginTop: 8 }
 
-export function AlbForm({ onChange, showErrors }: Props) {
+export function AlbForm({ onChange, showErrors }: Props): JSX.Element {
   const nodes   = useCloudStore((s) => s.nodes)
   const vpcs    = nodes.filter(n => n.type === 'vpc')
   const subnets = nodes.filter(n => n.type === 'subnet')
@@ -18,7 +18,7 @@ export function AlbForm({ onChange, showErrors }: Props) {
     name: '', scheme: 'internet-facing', subnetIds: [], securityGroupIds: [], vpcId: '',
   })
 
-  const update = <K extends keyof typeof form>(k: K, v: (typeof form)[K]) => {
+  const update = <K extends keyof typeof form>(k: K, v: (typeof form)[K]): void => {
     const next = { ...form, [k]: v }
     setForm(next)
     onChange({ resource: 'alb', ...next })

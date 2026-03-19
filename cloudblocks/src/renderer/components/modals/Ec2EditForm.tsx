@@ -9,7 +9,7 @@ const inp: React.CSSProperties = { width: '100%', background: 'var(--cb-bg-panel
 const sel = inp
 const lbl: React.CSSProperties = { fontSize: 9, color: 'var(--cb-text-muted)', textTransform: 'uppercase', marginBottom: 2, marginTop: 8 }
 
-export default function Ec2EditForm({ node, onChange }: Props) {
+export default function Ec2EditForm({ node, onChange }: Props): JSX.Element {
   const nodes = useCloudStore((s) => s.nodes)
   const [name, setName]       = useState((node.metadata.name as string) ?? node.label)
   const [instType, setInstType] = useState((node.metadata.instanceType as string) ?? 't3.micro')
@@ -17,10 +17,10 @@ export default function Ec2EditForm({ node, onChange }: Props) {
 
   const sgs = nodes.filter(n => n.type === 'security-group')
 
-  const emit = (overrides: Partial<Ec2EditParams>) =>
+  const emit = (overrides: Partial<Ec2EditParams>): void =>
     onChange({ resource: 'ec2', name, instanceType: instType, securityGroupIds: sgIds, ...overrides })
 
-  const toggleSg = (id: string) => {
+  const toggleSg = (id: string): void => {
     const next = sgIds.includes(id) ? sgIds.filter(x => x !== id) : [...sgIds, id]
     setSgIds(next)
     emit({ securityGroupIds: next })

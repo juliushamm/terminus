@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { useCloudStore, createCloudStore } from '../../../src/renderer/store/cloud'
 import { useUIStore } from '../../../src/renderer/store/ui'
-import type { CloudNode, ScanDelta } from '../../../src/renderer/types/cloud'
+import type { CloudNode } from '../../../src/renderer/types/cloud'
 
 const makeNode = (id: string): CloudNode => ({
   id, type: 'ec2', label: id, status: 'running', region: 'us-east-1', metadata: {},

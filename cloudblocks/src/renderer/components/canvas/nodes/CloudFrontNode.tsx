@@ -22,7 +22,7 @@ interface CloudFrontNodeData {
   dimmed?: boolean
 }
 
-export function CloudFrontNode({ data, selected }: NodeProps) {
+export function CloudFrontNode({ data, selected }: NodeProps): JSX.Element {
   const d = data as unknown as CloudFrontNodeData
   const stripeColor = statusStripeColor(d.status)
 

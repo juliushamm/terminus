@@ -7,16 +7,16 @@ interface SettingsPanelProps {
   onClose: () => void
 }
 
-export default function SettingsPanel({ onClose }: SettingsPanelProps) {
+export default function SettingsPanel({ onClose }: SettingsPanelProps): JSX.Element {
   const { settings, saveSettings } = useCloudStore()
   const [local, setLocal] = useState<Settings>(settings)
 
   useEffect(() => { setLocal(settings) }, [settings])
 
-  const update = <K extends keyof Settings>(key: K, val: Settings[K]) =>
+  const update = <K extends keyof Settings>(key: K, val: Settings[K]): void =>
     setLocal(prev => ({ ...prev, [key]: val }))
 
-  const handleSave = async () => {
+  const handleSave = async (): Promise<void> => {
     try {
       await saveSettings(local)
       applyTheme(local.theme)

@@ -12,7 +12,7 @@ interface TitleBarProps {
   onSettingsOpen: () => void
 }
 
-export function TitleBar({ onSettingsOpen }: TitleBarProps){
+export function TitleBar({ onSettingsOpen }: TitleBarProps): JSX.Element {
   const [profiles, setProfiles]       = useState<AwsProfile[]>([])
   const [connStatus, setConnStatus]   = useState<'unknown' | 'connected' | 'error'>('unknown')
   const profile    = useCloudStore((s) => s.profile)
@@ -28,13 +28,13 @@ export function TitleBar({ onSettingsOpen }: TitleBarProps){
     return unsub
   }, [])
 
-  const handleProfileChange = (name: string) => {
+  const handleProfileChange = (name: string): void => {
     setProfile(name)
     setConnStatus('unknown')
     window.cloudblocks.selectProfile(name)
   }
 
-  const handleRegionChange = (r: string) => {
+  const handleRegionChange = (r: string): void => {
     setRegion(r)
     setConnStatus('unknown')
     window.cloudblocks.selectRegion(r)

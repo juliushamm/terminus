@@ -5,6 +5,7 @@ import { useCloudStore } from '../../store/cloud'
 
 interface Props { node: CloudNode; onChange: (p: CloudFrontEditParams) => void; showErrors?: boolean }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const inp = (_err: boolean): React.CSSProperties => ({
   width: '100%', background: 'var(--cb-bg-panel)', border: '1px solid var(--cb-border)',
   borderRadius: 3, padding: '3px 6px', color: 'var(--cb-text-primary)', fontFamily: 'monospace', fontSize: 10,
@@ -13,7 +14,7 @@ const inp = (_err: boolean): React.CSSProperties => ({
 const sel = inp
 const lbl: React.CSSProperties = { fontSize: 9, color: 'var(--cb-text-muted)', textTransform: 'uppercase', marginBottom: 2, marginTop: 8 }
 
-export default function CloudFrontEditForm({ node, onChange }: Props) {
+export default function CloudFrontEditForm({ node, onChange }: Props): JSX.Element {
   const nodes    = useCloudStore((s) => s.nodes)
   const acmNodes = nodes.filter((n) => n.type === 'acm' && n.status === 'running')
 
@@ -25,7 +26,7 @@ export default function CloudFrontEditForm({ node, onChange }: Props) {
     priceClass:        (node.metadata.priceClass as CloudFrontEditParams['priceClass'] | undefined) ?? 'PriceClass_All',
   })
 
-  const update = <K extends keyof CloudFrontEditParams>(k: K, v: CloudFrontEditParams[K]) => {
+  const update = <K extends keyof CloudFrontEditParams>(k: K, v: CloudFrontEditParams[K]): void => {
     const next = { ...form, [k]: v }
     setForm(next)
     onChange(next)

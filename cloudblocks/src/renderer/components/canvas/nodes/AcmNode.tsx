@@ -22,7 +22,7 @@ interface AcmNodeData {
   dimmed?: boolean
 }
 
-export function AcmNode({ data, selected }: NodeProps) {
+export function AcmNode({ data, selected }: NodeProps): JSX.Element {
   const d = data as unknown as AcmNodeData
   const stripeColor = statusStripeColor(d.status)
 

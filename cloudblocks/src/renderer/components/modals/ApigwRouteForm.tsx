@@ -21,13 +21,13 @@ const selStyle: React.CSSProperties = {
 
 const METHODS = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'ANY'] as const
 
-export function ApigwRouteForm({ apiId, onChange, showErrors }: Props) {
+export function ApigwRouteForm({ apiId, onChange, showErrors }: Props): JSX.Element {
   const [method, setMethod] = useState<string>('GET')
   const [path, setPath]     = useState('')
 
   const err = showErrors ?? false
 
-  const emit = (m: string, p: string) => {
+  const emit = (m: string, p: string): void => {
     onChange({ resource: 'apigw-route', apiId, method: m, path: p })
   }
 

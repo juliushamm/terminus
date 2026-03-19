@@ -3,7 +3,7 @@ interface Props {
   onDismiss: () => void
 }
 
-export function ErrorBanner({ message, onDismiss }: Props){
+export function ErrorBanner({ message, onDismiss }: Props): JSX.Element {
   return (
     <div
       className="flex items-center gap-3 px-3 py-2 flex-shrink-0"

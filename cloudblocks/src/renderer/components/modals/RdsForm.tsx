@@ -9,7 +9,7 @@ const sel = (err: boolean): React.CSSProperties => ({ ...inp(err), cursor: 'poin
 const lbl: React.CSSProperties = { fontSize: 9, color: 'var(--cb-text-muted)', textTransform: 'uppercase', marginBottom: 2, marginTop: 8 }
 const row: React.CSSProperties = { display: 'flex', alignItems: 'center', gap: 8, marginTop: 8 }
 
-export function RdsForm({ onChange, showErrors }: Props) {
+export function RdsForm({ onChange, showErrors }: Props): JSX.Element {
   const nodes = useCloudStore((s) => s.nodes)
   const vpcs  = nodes.filter(n => n.type === 'vpc')
 
@@ -19,7 +19,7 @@ export function RdsForm({ onChange, showErrors }: Props) {
     multiAZ: false, publiclyAccessible: false, vpcId: '',
   })
 
-  const update = <K extends keyof typeof form>(k: K, v: (typeof form)[K]) => {
+  const update = <K extends keyof typeof form>(k: K, v: (typeof form)[K]): void => {
     const next = { ...form, [k]: v }
     setForm(next)
     onChange({ resource: 'rds', ...next })

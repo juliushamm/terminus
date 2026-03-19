@@ -1,6 +1,6 @@
 import { useUIStore } from '../store/ui'
 
-export function CanvasToast() {
+export function CanvasToast(): JSX.Element | null {
   const toast = useUIStore((s) => s.toast)
   if (!toast) return null
   return (

@@ -11,9 +11,9 @@ const inputStyle = (err: boolean): React.CSSProperties => ({
 })
 const label: React.CSSProperties = { fontSize: 9, color: 'var(--cb-text-muted)', textTransform: 'uppercase', marginBottom: 2, marginTop: 8 }
 
-export default function AlbEditForm({ node, onChange, showErrors }: Props) {
+export default function AlbEditForm({ node, onChange, showErrors }: Props): JSX.Element {
   const [name, setName] = useState((node.metadata.name as string) ?? node.label)
-  const update = (v: string) => { setName(v); onChange({ resource: 'alb', name: v }) }
+  const update = (v: string): void => { setName(v); onChange({ resource: 'alb', name: v }) }
   return (
     <div>
       <div style={label}>Name Tag</div>

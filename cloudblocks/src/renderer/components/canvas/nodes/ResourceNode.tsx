@@ -55,7 +55,7 @@ interface ResourceNodeData {
   dimmed?:    boolean  // focus mode — node is not in the highlighted subgraph
 }
 
-export function ResourceNode({ data, selected }: NodeProps) {
+export function ResourceNode({ data, selected }: NodeProps): JSX.Element {
   const d = data as unknown as ResourceNodeData
   const borderColor = TYPE_BORDER[d.nodeType] ?? '#555'
   const stripeColor = statusStripeColor(d.status)

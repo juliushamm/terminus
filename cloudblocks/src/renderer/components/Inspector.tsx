@@ -11,7 +11,7 @@ interface InspectorProps {
   onAddRoute?: (apiId: string) => void
 }
 
-export function Inspector({ onDelete, onEdit, onQuickAction, onAddRoute }: InspectorProps){
+export function Inspector({ onDelete, onEdit, onQuickAction, onAddRoute }: InspectorProps): JSX.Element {
   const selectedId      = useUIStore((s) => s.selectedNodeId)
   const setActiveCreate = useUIStore((s) => s.setActiveCreate)
   const nodes           = useCloudStore((s) => s.nodes)

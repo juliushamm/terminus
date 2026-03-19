@@ -6,11 +6,11 @@ interface Props { node: CloudNode; onChange: (p: S3EditParams) => void }
 
 const row: React.CSSProperties = { display: 'flex', alignItems: 'center', gap: 8, marginTop: 8 }
 
-export default function S3EditForm({ node, onChange }: Props) {
+export default function S3EditForm({ node, onChange }: Props): JSX.Element {
   const [versioning, setVersioning] = useState(!!(node.metadata.versioning))
   const [blockPublic, setBlockPublic] = useState(!!(node.metadata.blockPublicAccess))
 
-  const emit = (overrides: Partial<S3EditParams>) =>
+  const emit = (overrides: Partial<S3EditParams>): void =>
     onChange({ resource: 's3', versioning, blockPublicAccess: blockPublic, ...overrides })
 
   return (

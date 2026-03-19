@@ -11,18 +11,18 @@ const inp = (err: boolean): React.CSSProperties => ({
 const lbl: React.CSSProperties = { fontSize: 9, color: 'var(--cb-text-muted)', textTransform: 'uppercase', marginBottom: 2, marginTop: 8 }
 const btnSm: React.CSSProperties = { background: 'var(--cb-bg-elevated)', border: '1px solid var(--cb-border)', borderRadius: 2, padding: '2px 6px', color: 'var(--cb-text-muted)', fontFamily: 'monospace', fontSize: 9, cursor: 'pointer' }
 
-export function ApigwForm({ onChange, showErrors }: Props) {
+export function ApigwForm({ onChange, showErrors }: Props): JSX.Element {
   const [name, setName] = useState('')
   const [corsInputs, setCorsInputs] = useState<string[]>([''])
 
   const err = showErrors ?? false
 
-  const emit = (nextName: string, nextCors: string[]) => {
+  const emit = (nextName: string, nextCors: string[]): void => {
     const corsOrigins = nextCors.filter((s) => s.trim() !== '')
     onChange({ resource: 'apigw', name: nextName, corsOrigins })
   }
 
-  const updateCors = (newInputs: string[]) => {
+  const updateCors = (newInputs: string[]): void => {
     setCorsInputs(newInputs)
     emit(name, newInputs)
   }

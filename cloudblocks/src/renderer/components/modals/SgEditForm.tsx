@@ -6,13 +6,13 @@ interface Props { node: CloudNode; onChange: (p: SgEditParams) => void }
 
 const inp: React.CSSProperties = { background: 'var(--cb-bg-panel)', border: '1px solid var(--cb-border)', borderRadius: 3, padding: '2px 4px', color: 'var(--cb-text-primary)', fontFamily: 'monospace', fontSize: 9, boxSizing: 'border-box' as const }
 
-export default function SgEditForm({ node, onChange }: Props) {
+export default function SgEditForm({ node, onChange }: Props): JSX.Element {
   const initial: SgRule[] = (node.metadata.rules as SgRule[]) ?? []
   const [rules, setRules] = useState<SgRule[]>(initial.length > 0 ? initial : [{ protocol: 'tcp', fromPort: 443, toPort: 443, cidr: '0.0.0.0/0' }])
 
-  const update = (next: SgRule[]) => { setRules(next); onChange({ resource: 'sg', rules: next }) }
+  const update = (next: SgRule[]): void => { setRules(next); onChange({ resource: 'sg', rules: next }) }
 
-  const setRule = (i: number, field: keyof SgRule, value: string | number) => {
+  const setRule = (i: number, field: keyof SgRule, value: string | number): void => {
     const next = rules.map((r, idx) => idx === i ? { ...r, [field]: value } : r)
     update(next)
   }

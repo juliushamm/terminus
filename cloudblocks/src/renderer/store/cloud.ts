@@ -95,7 +95,7 @@ export const useCloudStore = create<CloudState>((set) => ({
 }))
 
 // test-only factory — allows isolated store instances in unit tests
-export function createCloudStore() {
+export function createCloudStore(): ReturnType<typeof createStore<CloudState>> {
   return createStore<CloudState>((set) => ({
     nodes:          [],
     scanStatus:     'idle',

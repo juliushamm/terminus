@@ -1,4 +1,4 @@
-export function Onboarding(){
+export function Onboarding(): JSX.Element {
   return (
     <div className="flex flex-col items-center justify-center h-full gap-4 text-center" style={{ fontFamily: 'monospace' }}>
       <div className="text-3xl font-bold tracking-tighter" style={{ color: 'var(--cb-accent)' }}>CLOUDBLOCKS</div>

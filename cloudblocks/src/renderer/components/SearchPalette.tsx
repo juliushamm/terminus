@@ -40,7 +40,7 @@ interface Props {
   onSelect: (nodeId: string) => void
 }
 
-export function SearchPalette({ open, onClose, onSelect }: Props) {
+export function SearchPalette({ open, onClose, onSelect }: Props): JSX.Element | null {
   const nodes = useCloudStore((s) => s.nodes)
   const [query, setQuery] = useState('')
   const [cursor, setCursor] = useState(0)
@@ -63,16 +63,20 @@ export function SearchPalette({ open, onClose, onSelect }: Props) {
   // Reset on open
   useEffect(() => {
     if (open) {
-      setQuery('')
-      setCursor(0)
-      // Focus after paint
-      requestAnimationFrame(() => inputRef.current?.focus())
+      // Use requestAnimationFrame to avoid synchronous setState in effect
+      requestAnimationFrame(() => {
+        setQuery('')
+        setCursor(0)
+        inputRef.current?.focus()
+      })
     }
   }, [open])
 
   // Clamp cursor
   useEffect(() => {
-    setCursor((c) => Math.min(c, Math.max(0, results.length - 1)))
+    requestAnimationFrame(() => {
+      setCursor((c) => Math.min(c, Math.max(0, results.length - 1)))
+    })
   }, [results.length])
 
   const handleKeyDown = useCallback(

@@ -24,7 +24,7 @@ const RESOURCE_LABELS: Record<string, string> = {
   cloudfront: 'CloudFront Distribution', apigw: 'API Gateway',
 }
 
-export default function EditModal({ node, onClose }: EditModalProps) {
+export default function EditModal({ node, onClose }: EditModalProps): JSX.Element | null {
   const { setCommandPreview, appendCliOutput, clearCliOutput } = useCliStore()
   const [showErrors, setShowErrors] = useState(false)
   const [isRunning, setIsRunning] = useState(false)
@@ -32,14 +32,14 @@ export default function EditModal({ node, onClose }: EditModalProps) {
   const handleRunRef = useRef<() => void>(() => {})
 
   useEffect(() => {
-    const listener = () => handleRunRef.current()
+    const listener = (): void => handleRunRef.current()
     window.addEventListener('commanddrawer:run', listener)
     return () => window.removeEventListener('commanddrawer:run', listener)
   }, [])
 
   if (!node) return null
 
-  const handleChange = (params: EditParams) => {
+  const handleChange = (params: EditParams): void => {
     paramsRef.current = params
     if (params.resource === 'cloudfront') {
       setCommandPreview(['[CloudFront distribution will be updated via SDK]'])
@@ -49,7 +49,7 @@ export default function EditModal({ node, onClose }: EditModalProps) {
     setCommandPreview(cmds.map(argv => 'aws ' + argv.join(' ')))
   }
 
-  const handleRun = async () => {
+  const handleRun = async (): Promise<void> => {
     if (!paramsRef.current) { setShowErrors(true); return }
     setIsRunning(true)
     clearCliOutput()

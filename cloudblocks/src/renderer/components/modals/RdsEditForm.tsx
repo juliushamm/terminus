@@ -8,12 +8,12 @@ const sel: React.CSSProperties = { width: '100%', background: 'var(--cb-bg-panel
 const lbl: React.CSSProperties = { fontSize: 9, color: 'var(--cb-text-muted)', textTransform: 'uppercase', marginBottom: 2, marginTop: 8 }
 const row: React.CSSProperties = { display: 'flex', alignItems: 'center', gap: 8, marginTop: 8 }
 
-export default function RdsEditForm({ node, onChange }: Props) {
+export default function RdsEditForm({ node, onChange }: Props): JSX.Element {
   const [cls, setCls]    = useState((node.metadata.dbInstanceClass as string) ?? 'db.t3.micro')
   const [multiAZ, setMultiAZ] = useState(!!(node.metadata.multiAZ))
   const [delProt, setDelProt] = useState(!!(node.metadata.deletionProtection))
 
-  const emit = (overrides: Partial<RdsEditParams>) =>
+  const emit = (overrides: Partial<RdsEditParams>): void =>
     onChange({ resource: 'rds', dbInstanceClass: cls, multiAZ, deletionProtection: delProt, ...overrides })
 
   return (

@@ -87,7 +87,7 @@ export class ResourceScanner {
 
       // Signal successful connection on the first scan that completes
       this.window.webContents.send(IPC.CONN_STATUS, 'connected')
-    } catch (err) {
+    } catch {
       this.window.webContents.send(IPC.SCAN_STATUS, 'error')
       this.window.webContents.send(IPC.CONN_STATUS, 'error')
     }

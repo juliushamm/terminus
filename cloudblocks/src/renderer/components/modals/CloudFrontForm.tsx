@@ -13,7 +13,7 @@ const sel = inp
 const lbl: React.CSSProperties = { fontSize: 9, color: 'var(--cb-text-muted)', textTransform: 'uppercase', marginBottom: 2, marginTop: 8 }
 const btnSm: React.CSSProperties = { background: 'var(--cb-bg-elevated)', border: '1px solid var(--cb-border)', borderRadius: 2, padding: '2px 6px', color: 'var(--cb-text-muted)', fontFamily: 'monospace', fontSize: 9, cursor: 'pointer' }
 
-export function CloudFrontForm({ onChange, showErrors }: Props) {
+export function CloudFrontForm({ onChange, showErrors }: Props): JSX.Element {
   const nodes = useCloudStore((s) => s.nodes)
   const acmNodes = nodes.filter((n) => n.type === 'acm' && n.status === 'running')
   const s3Nodes  = nodes.filter((n) => n.type === 's3')
@@ -29,13 +29,13 @@ export function CloudFrontForm({ onChange, showErrors }: Props) {
 
   const err = showErrors ?? false
 
-  const update = <K extends keyof typeof form>(k: K, v: (typeof form)[K]) => {
+  const update = <K extends keyof typeof form>(k: K, v: (typeof form)[K]): void => {
     const next = { ...form, [k]: v }
     setForm(next)
     onChange({ resource: 'cloudfront', ...next })
   }
 
-  const updateOrigin = (i: number, field: 'id' | 'domainName', value: string) => {
+  const updateOrigin = (i: number, field: 'id' | 'domainName', value: string): void => {
     const next = form.origins.map((o, j) => j === i ? { ...o, [field]: value } : o)
     update('origins', next)
   }

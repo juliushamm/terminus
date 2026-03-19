@@ -21,7 +21,7 @@ import { useUIStore } from '../store/ui'
 import { useCliStore } from '../store/cli'
 import type { AwsProfile, CloudNode } from '../types/cloud'
 
-export default function App(){
+export default function App(): JSX.Element | null {
   useIpc()
   const { triggerScan } = useScanner()
   const [profiles, setProfiles] = useState<AwsProfile[] | null>(null)
@@ -66,14 +66,14 @@ export default function App(){
     return () => window.removeEventListener('keydown', onKeyDown)
   }, [])
 
-  const handleDeleteConfirm = (node: CloudNode, opts: DeleteOptions) => {
+  const handleDeleteConfirm = (node: CloudNode, opts: DeleteOptions): void => {
     const commands = buildDeleteCommands(node, opts)
     setCommandPreview(commands.map(argv => 'aws ' + argv.join(' ')))
     setPendingCommand(commands)
     setDeleteTarget(null)
   }
 
-  const handleDeleteRequest = (node: CloudNode) => {
+  const handleDeleteRequest = (node: CloudNode): void => {
     if (settings.deleteConfirmStyle === 'command-drawer') {
       handleDeleteConfirm(node, {})
     } else {
@@ -81,7 +81,7 @@ export default function App(){
     }
   }
 
-  const handleQuickAction = (node: CloudNode, action: 'stop' | 'start' | 'reboot' | 'invalidate', meta?: { path?: string }) => {
+  const handleQuickAction = (node: CloudNode, action: 'stop' | 'start' | 'reboot' | 'invalidate', meta?: { path?: string }): void => {
     if (action === 'invalidate') {
       window.cloudblocks.invalidateCloudFront(node.id, meta?.path ?? '/*')
       return
@@ -91,7 +91,7 @@ export default function App(){
     setPendingCommand(cmds)
   }
 
-  const handleNodeContextMenu = (node: CloudNode, x: number, y: number) => {
+  const handleNodeContextMenu = (node: CloudNode, x: number, y: number): void => {
     setNodeMenu({ node, x, y })
   }
 
