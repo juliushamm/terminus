@@ -7,7 +7,7 @@ interface Props { node: CloudNode; onChange: (p: LambdaEditParams) => void }
 const inp: React.CSSProperties = { width: '100%', background: 'var(--cb-bg-panel)', border: '1px solid var(--cb-border)', borderRadius: 3, padding: '3px 6px', color: 'var(--cb-text-primary)', fontFamily: 'monospace', fontSize: 10, boxSizing: 'border-box' as const }
 const lbl: React.CSSProperties = { fontSize: 9, color: 'var(--cb-text-muted)', textTransform: 'uppercase', marginBottom: 2, marginTop: 8 }
 
-export default function LambdaEditForm({ node, onChange }: Props): JSX.Element {
+export default function LambdaEditForm({ node, onChange }: Props): React.JSX.Element {
   const [memory, setMemory]   = useState(Number(node.metadata.memorySize) || 128)
   const [timeout, setTimeout] = useState(Number(node.metadata.timeout) || 3)
   const [envStr, setEnvStr]   = useState(() => {

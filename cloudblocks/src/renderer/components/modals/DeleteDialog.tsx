@@ -13,7 +13,7 @@ const RESOURCE_LABELS: Record<string, string> = {
   rds: 'RDS Instance', s3: 'S3 Bucket', lambda: 'Lambda Function', alb: 'Load Balancer',
 }
 
-export default function DeleteDialog({ node, onClose, onConfirm }: DeleteDialogProps): JSX.Element {
+export default function DeleteDialog({ node, onClose, onConfirm }: DeleteDialogProps): React.JSX.Element {
   const [input, setInput] = useState('')
   const [skipSnapshot, setSkipSnapshot] = useState(false)
   const [force, setForce] = useState(false)

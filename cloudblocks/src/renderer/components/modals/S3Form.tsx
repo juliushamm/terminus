@@ -21,7 +21,7 @@ function fieldStyle(value: string, showErrors: boolean): React.CSSProperties {
   }
 }
 
-export function S3Form({ onChange, showErrors = false }: Props): JSX.Element {
+export function S3Form({ onChange, showErrors = false }: Props): React.JSX.Element {
   const currentRegion       = useCloudStore((s) => s.region)
   const [bucketName,        setBucketName]        = useState('')
   const [region,            setRegion]            = useState(currentRegion)

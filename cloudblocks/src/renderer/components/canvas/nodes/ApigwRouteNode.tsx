@@ -17,7 +17,7 @@ const METHOD_COLORS: Record<string, string> = {
   ANY:    '#6b7280',
 }
 
-export function ApigwRouteNode({ data, selected }: NodeProps): JSX.Element {
+export function ApigwRouteNode({ data, selected }: NodeProps): React.JSX.Element {
   const d = data as unknown as ApigwRouteNodeData
 
   // Parse method + path from label if not provided directly

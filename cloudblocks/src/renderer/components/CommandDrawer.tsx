@@ -3,7 +3,7 @@ import { useCloudStore } from '../store/cloud'
 import { useUIStore } from '../store/ui'
 import { useCliStore } from '../store/cli'
 
-export function CommandDrawer(): JSX.Element {
+export function CommandDrawer(): React.JSX.Element {
   const cliOutput         = useCliStore((s) => s.cliOutput)
   const commandPreview    = useCliStore((s) => s.commandPreview)
   const pendingCommand    = useCliStore((s) => s.pendingCommand)

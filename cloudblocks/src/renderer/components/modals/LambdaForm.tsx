@@ -8,7 +8,7 @@ const inp = (err: boolean): React.CSSProperties => ({ width: '100%', background:
 const sel = inp
 const lbl: React.CSSProperties = { fontSize: 9, color: 'var(--cb-text-muted)', textTransform: 'uppercase', marginBottom: 2, marginTop: 8 }
 
-export function LambdaForm({ onChange, showErrors }: Props): JSX.Element {
+export function LambdaForm({ onChange, showErrors }: Props): React.JSX.Element {
   const nodes = useCloudStore((s) => s.nodes)
   const vpcs    = nodes.filter(n => n.type === 'vpc')
   const subnets = nodes.filter(n => n.type === 'subnet')

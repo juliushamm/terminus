@@ -24,7 +24,7 @@ const RESOURCE_LABELS: Record<string, string> = {
   cloudfront: 'CloudFront Distribution', apigw: 'API Gateway',
 }
 
-export default function EditModal({ node, onClose }: EditModalProps): JSX.Element | null {
+export default function EditModal({ node, onClose }: EditModalProps): React.JSX.Element | null {
   const { setCommandPreview, appendCliOutput, clearCliOutput } = useCliStore()
   const [showErrors, setShowErrors] = useState(false)
   const [isRunning, setIsRunning] = useState(false)

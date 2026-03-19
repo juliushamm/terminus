@@ -17,7 +17,7 @@ const RESOURCE_LABELS: Record<string, string> = {
   rds: 'RDS Instance', s3: 'S3 Bucket', lambda: 'Lambda Function', alb: 'Load Balancer',
 }
 
-export default function NodeContextMenu({ node, x, y, onEdit, onDelete, onStop, onStart, onClose }: NodeContextMenuProps): JSX.Element {
+export default function NodeContextMenu({ node, x, y, onEdit, onDelete, onStop, onStart, onClose }: NodeContextMenuProps): React.JSX.Element {
   const label = RESOURCE_LABELS[node.type] ?? node.type
   const showStopStart = node.type === 'ec2' || node.type === 'rds'
 

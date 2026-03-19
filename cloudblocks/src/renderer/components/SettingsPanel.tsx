@@ -7,7 +7,7 @@ interface SettingsPanelProps {
   onClose: () => void
 }
 
-export default function SettingsPanel({ onClose }: SettingsPanelProps): JSX.Element {
+export default function SettingsPanel({ onClose }: SettingsPanelProps): React.JSX.Element {
   const { settings, saveSettings } = useCloudStore()
   const [local, setLocal] = useState<Settings>(settings)
 

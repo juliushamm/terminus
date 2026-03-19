@@ -14,7 +14,7 @@ const inp = (_err: boolean): React.CSSProperties => ({
 const sel = inp
 const lbl: React.CSSProperties = { fontSize: 9, color: 'var(--cb-text-muted)', textTransform: 'uppercase', marginBottom: 2, marginTop: 8 }
 
-export default function CloudFrontEditForm({ node, onChange }: Props): JSX.Element {
+export default function CloudFrontEditForm({ node, onChange }: Props): React.JSX.Element {
   const nodes    = useCloudStore((s) => s.nodes)
   const acmNodes = nodes.filter((n) => n.type === 'acm' && n.status === 'running')
 

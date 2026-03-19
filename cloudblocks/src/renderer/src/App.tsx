@@ -21,7 +21,7 @@ import { useUIStore } from '../store/ui'
 import { useCliStore } from '../store/cli'
 import type { AwsProfile, CloudNode } from '../types/cloud'
 
-export default function App(): JSX.Element | null {
+export default function App(): React.JSX.Element | null {
   useIpc()
   const { triggerScan } = useScanner()
   const [profiles, setProfiles] = useState<AwsProfile[] | null>(null)

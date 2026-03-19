@@ -6,7 +6,7 @@ interface ApigwNodeData {
   dimmed?:  boolean
 }
 
-export function ApigwNode({ data }: NodeProps): JSX.Element {
+export function ApigwNode({ data }: NodeProps): React.JSX.Element {
   const d = data as unknown as ApigwNodeData
   return (
     <div

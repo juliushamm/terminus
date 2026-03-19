@@ -138,7 +138,7 @@ interface GraphViewProps {
   onNodeContextMenu: (node: CloudNode, x: number, y: number) => void
 }
 
-export function GraphView({ onNodeContextMenu }: GraphViewProps): JSX.Element {
+export function GraphView({ onNodeContextMenu }: GraphViewProps): React.JSX.Element {
   const cloudNodes      = useCloudStore((s) => s.nodes)
   const pendingNodes    = useCloudStore((s) => s.pendingNodes)
   const selectNode      = useUIStore((s) => s.selectNode)

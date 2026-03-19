@@ -7,7 +7,7 @@ interface Props {
   onCancel:    () => void
 }
 
-export function SaveViewModal({ slot, initialName, onSave, onCancel }: Props): JSX.Element {
+export function SaveViewModal({ slot, initialName, onSave, onCancel }: Props): React.JSX.Element {
   const [name, setName] = useState(initialName)
 
   const btnBase: React.CSSProperties = {

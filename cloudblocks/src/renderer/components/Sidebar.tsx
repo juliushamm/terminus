@@ -14,7 +14,7 @@ const SERVICES: { type: NodeType; label: string }[] = [
   { type: 'igw',            label: 'IGW' },
 ]
 
-export function Sidebar(): JSX.Element {
+export function Sidebar(): React.JSX.Element {
   const view    = useUIStore((s) => s.view)
   const setView = useUIStore((s) => s.setView)
   const nodes   = useCloudStore((s) => s.nodes)

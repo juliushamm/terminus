@@ -9,7 +9,7 @@ const inp: React.CSSProperties = { width: '100%', background: 'var(--cb-bg-panel
 const sel = inp
 const lbl: React.CSSProperties = { fontSize: 9, color: 'var(--cb-text-muted)', textTransform: 'uppercase', marginBottom: 2, marginTop: 8 }
 
-export default function Ec2EditForm({ node, onChange }: Props): JSX.Element {
+export default function Ec2EditForm({ node, onChange }: Props): React.JSX.Element {
   const nodes = useCloudStore((s) => s.nodes)
   const [name, setName]       = useState((node.metadata.name as string) ?? node.label)
   const [instType, setInstType] = useState((node.metadata.instanceType as string) ?? 't3.micro')

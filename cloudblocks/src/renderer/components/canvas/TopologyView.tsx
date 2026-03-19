@@ -336,7 +336,7 @@ interface TopologyViewProps {
   onNodeContextMenu: (node: CloudNode, x: number, y: number) => void
 }
 
-export function TopologyView({ onNodeContextMenu }: TopologyViewProps): JSX.Element {
+export function TopologyView({ onNodeContextMenu }: TopologyViewProps): React.JSX.Element {
   const cloudNodes      = useCloudStore((s) => s.nodes)
   const pendingNodes    = useCloudStore((s) => s.pendingNodes)
   const selectNode      = useUIStore((s) => s.selectNode)

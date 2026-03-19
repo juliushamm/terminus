@@ -21,7 +21,7 @@ const selStyle: React.CSSProperties = {
 
 const METHODS = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'ANY'] as const
 
-export function ApigwRouteForm({ apiId, onChange, showErrors }: Props): JSX.Element {
+export function ApigwRouteForm({ apiId, onChange, showErrors }: Props): React.JSX.Element {
   const [method, setMethod] = useState<string>('GET')
   const [path, setPath]     = useState('')
 

@@ -20,7 +20,7 @@ const CREATABLE = [
   { resource: 'apigw',      label: 'New API Gateway' },
 ] as const
 
-export function CanvasContextMenu({ x, y, onClose }: Props): JSX.Element {
+export function CanvasContextMenu({ x, y, onClose }: Props): React.JSX.Element {
   const setActiveCreate = useUIStore((s) => s.setActiveCreate)
   const [pendingResource, setPendingResource] = useState<string | null>(null)
 

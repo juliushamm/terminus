@@ -1,7 +1,7 @@
 import type { NodeProps } from '@xyflow/react'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function GlobalZoneNode(_props: NodeProps): JSX.Element {
+export function GlobalZoneNode(_props: NodeProps): React.JSX.Element {
   return (
     <div
       style={{

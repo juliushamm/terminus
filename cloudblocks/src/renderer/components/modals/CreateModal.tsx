@@ -64,7 +64,7 @@ const RESOURCE_TO_NODE_TYPE: Record<string, NodeType> = {
   'apigw-route': 'apigw-route',
 }
 
-export function CreateModal(): JSX.Element | null {
+export function CreateModal(): React.JSX.Element | null {
   const activeCreate         = useUIStore((s) => s.activeCreate)
   const setActiveCreate      = useUIStore((s) => s.setActiveCreate)
   const selectedNodeId       = useUIStore((s) => s.selectedNodeId)
