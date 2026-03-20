@@ -1,0 +1,61 @@
+<h2>Command Drawer — execution states</h2>
+<p class="subtitle">What should the drawer look like while a command is running and after it completes?</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Expandable strip — streaming log</h3>
+      <p>Drawer stays as a thin strip at the bottom. On Run, it expands upward to show streaming stdout/stderr. Collapses back to strip on success or dismiss.</p>
+      <div style="margin-top:10px;background:#0d1117;border:1px solid #30363d;border-radius:4px;overflow:hidden;font-size:9px">
+        <!-- collapsed state label -->
+        <div style="padding:3px 8px;color:#555;font-size:8px;border-bottom:1px solid #1a2332">collapsed (default)</div>
+        <div style="display:flex;align-items:center;gap:6px;padding:4px 8px;border-bottom:1px solid #30363d">
+          <span style="color:#FF9900">$</span>
+          <code style="color:#eee;flex:1">aws ec2 create-vpc --cidr-block 10.0.0.0/16</code>
+          <div style="background:#22c55e;border-radius:2px;padding:1px 6px;color:#000;font-size:8px;font-weight:bold">Run</div>
+          <div style="background:#1a2332;border:1px solid #30363d;border-radius:2px;padding:1px 6px;color:#aaa;font-size:8px">Cancel</div>
+        </div>
+        <!-- expanded state label -->
+        <div style="padding:3px 8px;color:#555;font-size:8px;border-bottom:1px solid #1a2332">expanded during/after run</div>
+        <div style="padding:6px 8px;height:50px;overflow:hidden;font-family:monospace;line-height:1.5">
+          <div style="color:#aaa">$ aws ec2 create-vpc --cidr-block 10.0.0.0/16</div>
+          <div style="color:#aaa">{</div>
+          <div style="color:#aaa">&nbsp;&nbsp;"Vpc": {</div>
+          <div style="color:#22c55e">&nbsp;&nbsp;&nbsp;&nbsp;"VpcId": "vpc-0abc1234",</div>
+          <div style="color:#22c55e">&nbsp;&nbsp;&nbsp;&nbsp;"State": "pending"</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;padding:3px 8px;border-top:1px solid #30363d">
+          <span style="color:#22c55e;font-size:8px">✓ Success</span>
+          <span style="flex:1"></span>
+          <div style="color:#555;font-size:8px;cursor:pointer">✕ dismiss</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Fixed-height drawer — scrollable log</h3>
+      <p>Drawer is always a fixed taller height (e.g., 120px). Log area is always visible, scrollable. No expand animation — always ready.</p>
+      <div style="margin-top:10px;background:#0d1117;border:1px solid #30363d;border-radius:4px;overflow:hidden;font-size:9px">
+        <div style="display:flex;align-items:center;gap:6px;padding:4px 8px;border-bottom:1px solid #30363d">
+          <span style="color:#FF9900">$</span>
+          <code style="color:#eee;flex:1">aws ec2 create-vpc --cidr-block 10.0.0.0/16</code>
+          <div style="background:#22c55e;border-radius:2px;padding:1px 6px;color:#000;font-size:8px;font-weight:bold">Run</div>
+          <div style="background:#1a2332;border:1px solid #30363d;border-radius:2px;padding:1px 6px;color:#aaa;font-size:8px">Cancel</div>
+        </div>
+        <div style="padding:6px 8px;height:60px;overflow-y:auto;font-family:monospace;line-height:1.5;background:#060d14">
+          <div style="color:#555;font-size:8px;margin-bottom:4px">— output —</div>
+          <div style="color:#aaa">$ aws ec2 create-vpc --cidr-block 10.0.0.0/16</div>
+          <div style="color:#aaa">{</div>
+          <div style="color:#22c55e">&nbsp;&nbsp;"VpcId": "vpc-0abc1234"</div>
+          <div style="color:#22c55e">&nbsp;&nbsp;"State": "pending"</div>
+          <div style="color:#22c55e">}</div>
+          <div style="color:#22c55e">✓ exit 0</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

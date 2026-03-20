@@ -1,0 +1,49 @@
+<h2>How should users create a new resource?</h2>
+<p class="subtitle">Three interaction patterns for triggering resource creation in M2</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Palette Drag-and-Drop</h3>
+      <p>User drags a resource type (VPC, EC2, SG) from the left sidebar palette onto the canvas. A "pending" node appears where they drop it, and the right Inspector panel opens with a creation form.</p>
+      <div style="margin-top:10px;background:#0d1117;border:1px solid #30363d;border-radius:4px;padding:10px;font-size:11px;display:flex;gap:12px;align-items:center">
+        <div style="background:#1a2332;border:1px solid #FF9900;border-radius:3px;padding:4px 8px;color:#FF9900;font-size:10px;white-space:nowrap">⊞ EC2</div>
+        <div style="color:#555">drag →</div>
+        <div style="border:1px dashed #FF9900;border-radius:4px;padding:4px 10px;color:#FF9900;font-size:10px;">drop on canvas</div>
+        <div style="color:#555">→</div>
+        <div style="color:#aaa;font-size:10px">Inspector opens with form</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Create Button in Sidebar</h3>
+      <p>Each resource type in the left sidebar has a "+" button. Clicking it opens a creation form in the Inspector panel (right sidebar). Resource only appears on canvas after the user runs the CLI command and it succeeds.</p>
+      <div style="margin-top:10px;background:#0d1117;border:1px solid #30363d;border-radius:4px;padding:10px;font-size:11px;display:flex;gap:12px;align-items:center">
+        <div style="background:#1a2332;border:1px solid #30363d;border-radius:3px;padding:4px 8px;color:#eee;font-size:10px;display:flex;align-items:center;gap:4px"><span style="color:#FF9900">+</span> EC2</div>
+        <div style="color:#555">click →</div>
+        <div style="color:#aaa;font-size:10px">Inspector: creation form</div>
+        <div style="color:#555">→</div>
+        <div style="color:#aaa;font-size:10px">CommandDrawer: aws ec2 run-instances…</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Canvas Context Menu</h3>
+      <p>Right-click anywhere on the empty canvas (or on an existing node) to get a context menu. "New Resource" submenu lists VPC, EC2, SG. Selection opens the Inspector form. Feels like a design tool (Figma, Miro).</p>
+      <div style="margin-top:10px;background:#0d1117;border:1px solid #30363d;border-radius:4px;padding:10px;font-size:11px;display:flex;gap:12px;align-items:center">
+        <div style="color:#aaa;font-size:10px">right-click canvas</div>
+        <div style="color:#555">→</div>
+        <div style="background:#1a2332;border:1px solid #30363d;border-radius:3px;padding:4px 8px;color:#eee;font-size:10px">New Resource ▶</div>
+        <div style="color:#555">→</div>
+        <div style="color:#aaa;font-size:10px">Inspector form</div>
+      </div>
+    </div>
+  </div>
+</div>

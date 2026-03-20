@@ -1,0 +1,78 @@
+<h2>Inspector edit — how does it feel?</h2>
+<p class="subtitle">User clicks Edit in the Inspector. What happens to the panel?</p>
+
+<div class="options">
+
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Replace — form swaps in</h3>
+      <p>Edit replaces the read-only view with a form. Header stays; body becomes editable fields. Cancel restores the read-only view.</p>
+      <div style="display:flex;gap:6px;margin-top:10px;font-family:monospace;font-size:9px">
+        <!-- Read view -->
+        <div style="flex:1;background:#060d14;border:1px solid #30363d;border-radius:4px;padding:8px">
+          <div style="color:#555;font-size:7px;text-transform:uppercase;margin-bottom:4px">Read</div>
+          <div style="color:#FF9900;font-weight:bold;margin-bottom:6px">vpc-0abc1234</div>
+          <div style="color:#555;font-size:8px;margin-bottom:2px">CIDR 10.0.0.0/16</div>
+          <div style="color:#555;font-size:8px;margin-bottom:8px">Tenancy default</div>
+          <div style="display:flex;gap:4px">
+            <div style="background:#1a2332;border:1px solid #64b5f6;border-radius:2px;padding:2px 6px;color:#64b5f6;font-size:7px">✎ Edit</div>
+            <div style="background:#1a2332;border:1px solid #ff5f57;border-radius:2px;padding:2px 6px;color:#ff5f57;font-size:7px">✕ Del</div>
+          </div>
+        </div>
+        <div style="color:#555;align-self:center">→</div>
+        <!-- Edit view -->
+        <div style="flex:1;background:#060d14;border:1px solid #64b5f6;border-radius:4px;padding:8px">
+          <div style="color:#555;font-size:7px;text-transform:uppercase;margin-bottom:4px">Editing</div>
+          <div style="color:#FF9900;font-weight:bold;margin-bottom:6px">vpc-0abc1234</div>
+          <div style="color:#555;font-size:7px;margin-bottom:2px">NAME</div>
+          <input style="width:100%;background:#0d1117;border:1px solid #30363d;border-radius:2px;padding:2px 4px;color:#eee;font-family:monospace;font-size:8px;box-sizing:border-box;margin-bottom:4px" value="my-vpc" />
+          <div style="display:flex;gap:4px;margin-top:4px">
+            <div style="background:#22c55e;border-radius:2px;padding:2px 6px;color:#000;font-size:7px;font-weight:bold">Save</div>
+            <div style="background:#1a2332;border:1px solid #30363d;border-radius:2px;padding:2px 6px;color:#aaa;font-size:7px">Cancel</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Expand — form appears below details</h3>
+      <p>Read-only details stay visible at the top. Edit form expands below. You can see current values while editing. Inspector grows taller.</p>
+      <div style="background:#060d14;border:1px solid #30363d;border-radius:4px;padding:8px;font-family:monospace;font-size:9px;margin-top:10px;max-width:220px">
+        <div style="color:#FF9900;font-weight:bold;margin-bottom:4px">vpc-0abc1234</div>
+        <div style="color:#555;font-size:8px">CIDR 10.0.0.0/16 · default</div>
+        <div style="border-top:1px solid #1e2d40;margin:8px 0"></div>
+        <div style="color:#64b5f6;font-size:8px;margin-bottom:6px">✎ Edit</div>
+        <div style="color:#555;font-size:7px;margin-bottom:2px">NAME</div>
+        <input style="width:100%;background:#0d1117;border:1px solid #64b5f6;border-radius:2px;padding:2px 4px;color:#eee;font-family:monospace;font-size:8px;box-sizing:border-box;margin-bottom:6px" value="my-vpc" />
+        <div style="display:flex;gap:4px">
+          <div style="background:#22c55e;border-radius:2px;padding:2px 6px;color:#000;font-size:7px;font-weight:bold">Save</div>
+          <div style="background:#1a2332;border:1px solid #30363d;border-radius:2px;padding:2px 6px;color:#aaa;font-size:7px">Cancel</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Modal — same style as Create</h3>
+      <p>Edit opens the same centered overlay modal as Create, pre-filled with current values. Familiar, more space for complex forms (EC2, SG rules).</p>
+      <div style="margin-top:10px;background:rgba(0,0,0,0.5);border-radius:4px;padding:6px;display:flex;align-items:center;justify-content:center">
+        <div style="background:#0d1117;border:1px solid #FF9900;border-radius:6px;padding:10px;font-family:monospace;font-size:9px;width:180px">
+          <div style="color:#FF9900;font-weight:bold;margin-bottom:8px;border-bottom:1px solid #1e2d40;padding-bottom:4px">Edit VPC</div>
+          <div style="color:#555;font-size:7px;margin-bottom:2px">NAME</div>
+          <input style="width:100%;background:#060d14;border:1px solid #30363d;border-radius:2px;padding:2px 4px;color:#eee;font-family:monospace;font-size:8px;box-sizing:border-box;margin-bottom:8px" value="my-vpc" />
+          <div style="display:flex;justify-content:flex-end;gap:4px">
+            <div style="background:#1a2332;border:1px solid #30363d;border-radius:2px;padding:2px 8px;color:#aaa;font-size:7px">Cancel</div>
+            <div style="background:#22c55e;border-radius:2px;padding:2px 8px;color:#000;font-size:7px;font-weight:bold">Save</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

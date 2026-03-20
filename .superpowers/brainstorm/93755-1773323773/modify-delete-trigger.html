@@ -1,0 +1,54 @@
+<h2>M3 — Where do Edit and Delete live?</h2>
+<p class="subtitle">Select a node → actions appear somewhere. Where?</p>
+
+<div class="options">
+
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Inspector panel (right sidebar)</h3>
+      <p>Click a node → Inspector expands with resource details, an <strong>Edit</strong> button (opens modal, same style as Create), and a <strong>Delete</strong> button with confirmation. Same place you already read config.</p>
+      <div style="margin-top:10px;background:#060d14;border:1px solid #30363d;border-radius:4px;padding:8px;font-size:9px;font-family:monospace">
+        <div style="color:#FF9900;margin-bottom:6px;font-weight:bold">Inspector — vpc-0abc1234</div>
+        <div style="color:#555;font-size:8px;margin-bottom:4px">CIDR: 10.0.0.0/16 · Tenancy: default</div>
+        <div style="display:flex;gap:6px;margin-top:8px">
+          <div style="background:#1a2332;border:1px solid #64b5f6;border-radius:3px;padding:2px 8px;color:#64b5f6;font-size:8px">✎ Edit</div>
+          <div style="background:#1a2332;border:1px solid #ff5f57;border-radius:3px;padding:2px 8px;color:#ff5f57;font-size:8px">✕ Delete</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Right-click on the node</h3>
+      <p>Same context menu that triggers Create on the canvas background — right-clicking a <em>node</em> instead shows Edit and Delete for that resource. Canvas right-click still creates.</p>
+      <div style="margin-top:10px;background:#0d1117;border:1px solid #FF9900;border-radius:4px;font-family:monospace;font-size:9px;display:inline-block;min-width:140px">
+        <div style="padding:4px 10px 2px;color:#555;font-size:8px;text-transform:uppercase;letter-spacing:.1em">vpc-0abc1234</div>
+        <div style="padding:4px 10px;color:#64b5f6;cursor:pointer">✎ Edit VPC</div>
+        <div style="padding:4px 10px;color:#ff5f57;cursor:pointer;border-top:1px solid #1e2d40">✕ Delete VPC</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Both — Inspector for Edit, right-click for Delete</h3>
+      <p>Edit opens a full form in the Inspector (in-place, no modal). Delete is a right-click action with confirmation. Separates the two flows: deliberate edits use the sidebar, quick destructive ops use the menu.</p>
+      <div style="display:flex;gap:8px;margin-top:10px;align-items:flex-start">
+        <div style="background:#060d14;border:1px solid #30363d;border-radius:4px;padding:8px;font-size:9px;font-family:monospace;flex:1">
+          <div style="color:#FF9900;margin-bottom:4px;font-weight:bold">Inspector</div>
+          <div style="color:#555;font-size:8px">CIDR: 10.0.0.0/16</div>
+          <div style="margin-top:6px;background:#1a2332;border:1px solid #64b5f6;border-radius:3px;padding:2px 8px;color:#64b5f6;font-size:8px;display:inline-block">✎ Edit</div>
+        </div>
+        <div style="background:#0d1117;border:1px solid #FF9900;border-radius:4px;font-family:monospace;font-size:9px;min-width:120px">
+          <div style="padding:4px 10px 2px;color:#555;font-size:8px;text-transform:uppercase">Actions</div>
+          <div style="padding:4px 10px;color:#ff5f57">✕ Delete VPC</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
