@@ -14,7 +14,14 @@
       "Bash(cd /Users/julius/AI/proj1/cloudblocks && npm run build 2>&1)",
       "Bash(git commit:*)",
       "Bash(node -e \"const pkg = require\\('/Users/julius/AI/proj1/cloudblocks/package.json'\\); const d = pkg.dependencies; const dev = pkg.devDependencies; console.log\\('electron:', dev.electron\\); console.log\\('react:', dev.react\\); console.log\\('xyflow:', d['@xyflow/react']\\); console.log\\('zustand:', d.zustand\\); console.log\\('tailwindcss:', dev.tailwindcss\\); console.log\\('vitest:', dev.vitest\\); console.log\\('electron-vite:', dev['electron-vite']\\);\")",
-      "Bash(cd /Users/julius/AI/proj1/cloudblocks && npx vitest run tests/main/preload.test.ts 2>&1 | tail -15)"
+      "Bash(cd /Users/julius/AI/proj1/cloudblocks && npx vitest run tests/main/preload.test.ts 2>&1 | tail -15)",
+      "mcp__obsidian__obsidian_get_recent_changes",
+      "mcp__obsidian__obsidian_list_files_in_vault",
+      "mcp__obsidian__obsidian_list_files_in_dir",
+      "mcp__obsidian__obsidian_get_file_contents",
+      "mcp__obsidian__obsidian_append_content",
+      "mcp__obsidian__obsidian_simple_search",
+      "mcp__obsidian__obsidian_patch_content"
     ]
   }
 }
