@@ -24,7 +24,11 @@
       "mcp__obsidian__obsidian_patch_content",
       "WebFetch(domain:aws.amazon.com)",
       "WebSearch",
-      "WebFetch(domain:docs.localstack.cloud)"
+      "WebFetch(domain:docs.localstack.cloud)",
+      "Skill(commit-commands:commit)",
+      "Bash(cp /Users/julius/.claude/skills/aws-docs-lookup/SKILL.md /tmp/aws-docs-lookup-skill/SKILL.md)",
+      "Bash(cp /Users/julius/.claude/skills/aws-docs-lookup/error-codes.md /tmp/aws-docs-lookup-skill/error-codes.md)",
+      "Bash(cp /Users/julius/.claude/skills/aws-docs-lookup/iam-patterns.md /tmp/aws-docs-lookup-skill/iam-patterns.md)"
     ]
   }
 }
